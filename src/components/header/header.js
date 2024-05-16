@@ -1,5 +1,5 @@
 import './header.css'
-import logo from 'c:/sys/HeyCheff/heycheff-front/heycheff-front/src/assets/hey_cheff_black.png';
+import logo from 'c:/sys/HeyCheff/heycheff-front/src/assets/hey_cheff_black.png';
 
 //heycheff-front/src/
 
@@ -7,14 +7,16 @@ function Header(){
     return(
         <nav class="navbar bg-body-tertiary">
 
-        <div class="container-fluid">
+        <div class="navbar">
             <div class="nav-logo">
 		        <img src={logo} alt="Logo HeyCheff"/>
 	        </div>
-            <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-            <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+
+            <input class="nav-search nav-item" placeholder="Pesquise Aqui..."/>
+            
+            <div class="nav-item">
+                <button class="btn btn-outline-dark" type="submit">Cadastrar Receita</button>
+            </div>
         </div>
         </nav>
 

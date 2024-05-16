@@ -1,3 +1,4 @@
+
 .navbar {
     position: fixed;
     top: 0;
@@ -11,7 +12,22 @@
     padding: auto;
     z-index: 999;
 }
+.btn-outline-dark{
+    color: #dc3545;
+    background-color:#FFD186;
+    border-color: #dc3545;
+}
 
+.btn:hover{
+    color: white;
+    background-color: #dc3545 ;
+    font-style: bold;
+}
+
+.btn{
+    width: 150px;
+    margin-right: 10px;
+}
 .card-title {
     font-size: 18px;
     font-weight: bold;

@@ -1,3 +1,10 @@
+.p-hidden-accessible {
+  display: none;
+}
+
+.p-orderlist-controls {
+  display: none !important;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
