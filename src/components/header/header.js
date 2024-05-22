@@ -1,26 +1,32 @@
-import './header.css'
-import logo from 'c:/sys/HeyCheff/heycheff-front/src/assets/hey_cheff_black.png';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Image from 'react-bootstrap/Image';
+import Navbar from 'react-bootstrap/Navbar';
+import logo from '../../assets/hey_cheff_black.png';
+import { useModal } from '../modal/ModalContext';
+import './header.css';
 
-//heycheff-front/src/
+function Header() {
+    const { openModal } = useModal();
+    return (
+        <>
+            <Navbar>
+                <Container className='d-flex justify-content-between'>
+                    <Image src={logo} height='45px' />
+                    <Form className="d-flex">
+                        <Form.Control
+                            type="search"
+                            placeholder="Pesquise Aqui..."
+                            className="me-2"
+                            aria-label="Search"
+                        />
+                    </Form>
+                    <Button variant="outline-danger" onClick={openModal} >Cadastrar Receita</Button>
 
-function Header(){
-    return(
-        <nav class="navbar bg-body-tertiary">
-
-        <div class="navbar">
-            <div class="nav-logo">
-		        <img src={logo} alt="Logo HeyCheff"/>
-	        </div>
-
-            <input class="nav-search nav-item" placeholder="Pesquise Aqui..."/>
-            
-            <div class="nav-item">
-                <button class="btn btn-outline-dark" type="submit">Cadastrar Receita</button>
-            </div>
-        </div>
-        </nav>
-
-
+                </Container>
+            </Navbar>
+        </>
     )
 }
 export default Header;

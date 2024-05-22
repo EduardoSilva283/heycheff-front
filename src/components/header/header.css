@@ -1,85 +1,13 @@
 
 .navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
     background-color: #FFD186 !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-    height: fit-content;
-    padding: auto;
     z-index: 999;
 }
-.btn-outline-dark{
-    color: #dc3545;
-    background-color:#FFD186;
-    border-color: #dc3545;
-}
 
-.btn:hover{
-    color: white;
-    background-color: #dc3545 ;
-    font-style: bold;
-}
-
-.btn{
-    width: 150px;
-    margin-right: 10px;
-}
 .card-title {
     font-size: 18px;
     font-weight: bold;
     text-align: center;
     font-family: 'Comfortaa';
 }
-.nav-search {
-    font-family: 'Comfortaa';
-    font-weight: 400;
-    font-size: 16px;
-    border-radius: 16px;
-    width: 240px;
-    padding: 5px 10px;
-    border: none;
-    background-color: white;
-}
 
-input {
-    outline: none;
-}
-
-.nav-logo img {
-    margin-left: 10px;
-    height: 40px;
-}
-
-.thumb {
-    position: relative;
-}
-
-.btn-menu {
-    display: none;
-}
-
-@media (max-width: 700px) {
-    .btn-menu {
-        display: inline;
-    }
-
-    .nav-item {
-        display: none;
-    }
-
-    .nav-search {
-        margin-bottom: 1rem;
-        margin-right: .5rem;
-        border: solid 1px black;
-        width: 90%;
-    }
-
-    .search-area {
-        display: flex;
-        justify-content: space-between;
-    }
-}
