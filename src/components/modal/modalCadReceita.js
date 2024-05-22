@@ -3,6 +3,8 @@ import { Form } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { useModal } from './ModalContext';
 import { useEffect, useState } from 'react';
+import { API_URL } from '../../constants/const';
+import axios from 'axios';
 
 
 function ModalCadReceita() {
@@ -11,10 +13,16 @@ function ModalCadReceita() {
 
     useEffect(() => {
         const fetchAll = async () => {
-            const categorias = ['Japão', 'China'];
-            setCategorias(categorias);
+            try {
+                const categorias = await axios.get(API_URL + '/tags')
+                setCategorias(categorias.data);
+            }
+            catch (err) {
+                console.log(err)
+            }
         }
         fetchAll();
+
     }, []);
 
 
@@ -34,7 +42,7 @@ function ModalCadReceita() {
                                 return (
                                     <Form.Check
                                         inline
-                                        label= {c}
+                                        label={c.tag}
                                         name="group1"
                                         type='checkbox'
                                     />
