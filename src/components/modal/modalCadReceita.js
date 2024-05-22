@@ -3,6 +3,7 @@ import { Form, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useModal } from './ModalContext';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
+import DynamicTable from '../dinamicForms/dynamicTable';
 import axios from 'axios';
 
 
@@ -14,6 +15,8 @@ function ModalCadReceita() {
     const [file, setFile] = useState(null);
     const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showDynamicTable, setShowDynamicTable] = useState(false);
+
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -28,6 +31,7 @@ function ModalCadReceita() {
         fetchAll();
 
     }, []);
+
 
     const handleCategoriaChange = (e, categoria) => {
 
@@ -67,6 +71,7 @@ function ModalCadReceita() {
             console.log('Success:', response.data);
             setShowToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
+            setShowDynamicTable(true)
             //closeModal(); // Fecha o modal após o sucesso
         } catch (error) {
             console.error('Error:', error);
@@ -110,9 +115,14 @@ function ModalCadReceita() {
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
+                        <p></p>
                     </Form>
+                        
+                    <DynamicTable/>
                 </Modal.Body>
             </Modal>
+
+
 
             <ToastContainer position="top-end" className="p-3">
                 <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
