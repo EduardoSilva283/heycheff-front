@@ -12,6 +12,7 @@ function App() {
     <ModalProvider>
       <Header />
       <ModalCadReceita />
+      
     </ModalProvider>
 
 

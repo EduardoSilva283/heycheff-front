@@ -66,14 +66,12 @@ function DynamicTable() {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="formStepDescription">
-              <Form.Label>Descrição</Form.Label>
-              <Form.Control
-                type="text"
-                name="description"
-                value={currentStep.description}
-                onChange={handleChange}
-              />
+            <Form.Group className="mb-3" controlId="formTitulo">
+              <Form.Control type="file" />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formTitulo">
+              <Form.Label>Título da Receita</Form.Label>
+              <Form.Control type="file" />
             </Form.Group>
           </Form>
         </Modal.Body>
