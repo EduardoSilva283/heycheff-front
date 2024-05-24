@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
 import DynamicTable from '../dinamicForms/cadStep';
 import axios from 'axios';
+import './modalCadReceita.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
 import ModalCadStep from './modalCadStep';
 
@@ -37,20 +40,13 @@ function ModalCadReceita() {
 
 
     const handleCategoriaChange = (e, categoria) => {
-
         const { checked } = e.target;
-
-        setSelectedCategorias((prev) => {
-
+        setSelectedCategorias((itemCategoria) => {
             if (checked) {
-
-                return [...prev, categoria];
-
-            } else {
-
-                return prev.filter((c) => c.id !== categoria.id);
+                return Array.from(new Set([...itemCategoria, categoria]));
             }
-        });
+            return itemCategoria.filter(a => a.id !== categoria.id);
+        })
     };
 
     const handleFileChange = (e) => {
@@ -64,7 +60,8 @@ function ModalCadReceita() {
         formData.append('tags', JSON.stringify(selectedCategorias));
         formData.append('thumb', file);
 
-
+        console.log(Object.fromEntries(formData))
+        //TODO: adicionar verificação para os valores
         try {
             const response = await axios.post(API_URL + '/receitas', formData, {
                 headers: {
