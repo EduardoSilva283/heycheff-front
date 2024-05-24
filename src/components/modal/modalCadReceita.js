@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
 import DynamicTable from '../dinamicForms/cadStep';
 import axios from 'axios';
+import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
 import ModalCadStep from './modalCadStep';
 
 
@@ -122,7 +123,7 @@ function ModalCadReceita() {
                         <p></p>
                     </Form>
                         
-                    {showDynamicTable && <DynamicTable />}
+                    {<AddDeleteTableRows />}
 
                     
                 </Modal.Body>
