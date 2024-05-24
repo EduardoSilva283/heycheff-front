@@ -1,0 +1,15 @@
+.input-file {
+    padding: .5rem 1rem;
+    border-radius: 3px;
+    border-color: transparent;
+    background-color: #FFC107;
+    cursor: pointer;
+}
+
+.input-file:hover {
+    background-color: #EAB107;
+}
+
+.heycheffButton input {
+    display: none;
+}
