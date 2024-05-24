@@ -3,14 +3,11 @@ import { Form, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useModal } from './ModalContext';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
-import DynamicTable from '../dinamicForms/cadStep';
 import axios from 'axios';
 import './modalCadReceita.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
-import ModalCadStep from './modalCadStep';
-
 
 function ModalCadReceita() {
     const { isModalOpen, closeModal } = useModal();
@@ -23,9 +20,8 @@ function ModalCadReceita() {
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     //const [showModalStep, setShowModalStep] = useState(false);
 
-
     useEffect(() => {
-        const fetchAll = async () => {
+        (async () => {
             try {
                 const categorias = await axios.get(API_URL + '/tags')
                 setCategorias(categorias.data);
@@ -33,11 +29,8 @@ function ModalCadReceita() {
             catch (err) {
                 console.log(err)
             }
-        }
-        fetchAll();
-
+        })();
     }, []);
-
 
     const handleCategoriaChange = (e, categoria) => {
         const { checked } = e.target;
@@ -97,7 +90,6 @@ function ModalCadReceita() {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formCategorias">
                             <Form.Label>Escolha as Categorias:</Form.Label>
-                            
                             {categorias.map((c) => (
                                 <Form.Check
                                     key={c.id}
@@ -110,23 +102,23 @@ function ModalCadReceita() {
                                 />
                             ))}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formThumb">
-                            <Form.Label>Selecione a Thumb</Form.Label>
-                            <Form.Control className="input-step" type="file" onChange={handleFileChange} />
-                        </Form.Group>
+                        <div className='heycheffButton'>
+                            <label className='input-file'>
+                                <FontAwesomeIcon icon={faVideo} className="me-2" />
+                                Adicionar Vídeo
+                                <input accept="video/*" type='file' onChange={handleFileChange} />
+                            </label>
+                        </div>
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                         <p></p>
                     </Form>
-                        
+
                     {<AddDeleteTableRows />}
 
-                    
                 </Modal.Body>
             </Modal>
-
-
 
             <ToastContainer position="top-end" className="p-3">
                 <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
@@ -137,8 +129,6 @@ function ModalCadReceita() {
                 </Toast>
             </ToastContainer>
         </>
-
-
     );
 }
 export default ModalCadReceita;
