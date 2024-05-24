@@ -3,8 +3,10 @@ import { Form, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useModal } from './ModalContext';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
-import DynamicTable from '../dinamicForms/dynamicTable';
+import DynamicTable from '../dinamicForms/cadStep';
 import axios from 'axios';
+import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
+import ModalCadStep from './modalCadStep';
 
 
 function ModalCadReceita() {
@@ -16,6 +18,7 @@ function ModalCadReceita() {
     const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
+    //const [showModalStep, setShowModalStep] = useState(false);
 
 
     useEffect(() => {
@@ -72,6 +75,7 @@ function ModalCadReceita() {
             setShowToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true)
+            //setShowModalStep(true)
             //closeModal(); // Fecha o modal após o sucesso
         } catch (error) {
             console.error('Error:', error);
@@ -96,6 +100,7 @@ function ModalCadReceita() {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formCategorias">
                             <Form.Label>Escolha as Categorias:</Form.Label>
+                            
                             {categorias.map((c) => (
                                 <Form.Check
                                     key={c.id}
@@ -110,7 +115,7 @@ function ModalCadReceita() {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formThumb">
                             <Form.Label>Selecione a Thumb</Form.Label>
-                            <Form.Control type="file" onChange={handleFileChange} />
+                            <Form.Control className="input-step" type="file" onChange={handleFileChange} />
                         </Form.Group>
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
@@ -118,7 +123,9 @@ function ModalCadReceita() {
                         <p></p>
                     </Form>
                         
-                    <DynamicTable/>
+                    {<AddDeleteTableRows />}
+
+                    
                 </Modal.Body>
             </Modal>
 

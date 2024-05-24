@@ -5,12 +5,12 @@ import { useModal } from './ModalContext';
 
 
 function ModalCadStep() {
-    const { isModalOpen, closeModal } = useModal();
+    const { showModalStep, closeModal } = useModal();
 
 
     return (
         <>
-            <Modal show={isModalOpen} onHide={closeModal} fullscreen={true}>
+            <Modal show={showModalStep} onHide={closeModal} fullscreen={true}>
                 <Modal.Header closeButton>
                     <Modal.Title>Cadastrar Step</Modal.Title>
                 </Modal.Header>
