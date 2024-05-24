@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import { Form, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Form, Button, Toast, ToastContainer, Row, Col, InputGroup } from 'react-bootstrap';
 import { useModal } from './ModalContext';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../constants/const';
@@ -18,6 +18,7 @@ function ModalCadReceita() {
     const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     //const [showModalStep, setShowModalStep] = useState(false);
 
     useEffect(() => {
@@ -72,6 +73,10 @@ function ModalCadReceita() {
         }
     };
 
+    const filteredCategorias = categorias.filter(categoria =>
+        categoria.tag.toLowerCase().startsWith(searchTerm.toLowerCase())
+      );
+
     return (
         <>
             <Modal show={isModalOpen} onHide={closeModal} fullscreen={true}>
@@ -80,35 +85,48 @@ function ModalCadReceita() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="formTitulo">
-                            <Form.Label>Título da Receita</Form.Label>
+                        <InputGroup className="mb-3">
+                            <InputGroup.Text>Título da Receita</InputGroup.Text>
                             <Form.Control
                                 type="text"
                                 value={titulo}
                                 onChange={(e) => setTitulo(e.target.value)}
                             />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formCategorias">
-                            <Form.Label>Escolha as Categorias:</Form.Label>
-                            {categorias.map((c) => (
-                                <Form.Check
-                                    key={c.id}
-                                    inline
-                                    label={c.tag}
-                                    value={c.tag}
-                                    name="categorias"
-                                    type="checkbox"
-                                    onChange={(e) => handleCategoriaChange(e, c)}
+                        </InputGroup>
+                        <InputGroup className="mb-3">
+                            <InputGroup.Text>Categorias</InputGroup.Text>
+                            <Form.Control as="div">
+                                {filteredCategorias.map((c) => (
+                                    <Form.Check
+                                        className={'check' + c.id}
+                                        id={'tag' + c.id}
+                                        key={c.id}
+                                        inline
+                                        label={c.tag}
+                                        value={c.tag}
+                                        type="checkbox"
+                                        onChange={(e) => handleCategoriaChange(e, c)}
+                                    />
+                                ))}
+                            </Form.Control>
+                            <InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Pesquisar"
+                                    onChange={(e) => {
+                                        const {value} = e.target;
+                                        setSearchTerm(value);  
+                                    }}
                                 />
-                            ))}
-                        </Form.Group>
-                        <div className='heycheffButton'>
-                            <label className='input-file'>
+                            </InputGroup.Text>
+                        </InputGroup>
+                        <Form.Group controlId="formFile" className="heycheffButton">
+                            <Form.Label className='input-file'>
                                 <FontAwesomeIcon icon={faVideo} className="me-2" />
                                 Adicionar Vídeo
-                                <input accept="video/*" type='file' onChange={handleFileChange} />
-                            </label>
-                        </div>
+                            </Form.Label>
+                            <Form.Control type='file' hidden accept='video/*' onChange={handleFileChange} />
+                        </Form.Group>
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
@@ -132,3 +150,19 @@ function ModalCadReceita() {
     );
 }
 export default ModalCadReceita;
+
+export const CheckCategorias = (categorias, handle) => {
+    return <>
+        {categorias.map((c) => (
+            <Form.Check
+                id={'tag' + c.id}
+                key={c.id}
+                inline
+                label={c.tag}
+                value={c.tag}
+                type="checkbox"
+                onChange={(e) => handle(e, c)}
+            />
+        ))}
+    </>
+}
