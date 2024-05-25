@@ -3,6 +3,8 @@ import { Form } from "react-bootstrap";
 import { API_URL } from '../../constants/const';
 import axios from "axios";
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 function TableRows({ rowsData, deleteTableRows, handleChange }) {
     const [medidas, setMedidas] = useState([]);
@@ -36,7 +38,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
 
                 <tr key={index}>
                     <td>
-                        <Form.Control type="text" id="inputPassword5" aria-describedby="passwordHelpBlock" />
+                        <Form.Control type="text"/>
                     </td>
 
                     <td>
@@ -49,8 +51,9 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
                         </Form.Control>
                     </td>
 
-                    <td><input type="text" value={medida} onChange={(evnt) => (handleChange(index, evnt))} name="medida" className="form-control" /> </td>
-                    <td><Button className="btn btn-outline-danger" onClick={() => (deleteTableRows(index))}>x</Button></td>
+                    <td><Form.Control type="text" value={medida} onChange={(evnt) => (handleChange(index, evnt))} name="medida"/> </td>
+                    <td className='d-flex justify-content-end'><Button variant="danger" onClick={() => (deleteTableRows(index))}>
+                        <FontAwesomeIcon icon={faXmark} /></Button></td>
                 </tr>
             )
         })

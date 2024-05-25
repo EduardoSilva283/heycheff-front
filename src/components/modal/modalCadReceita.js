@@ -1,13 +1,13 @@
-import Modal from 'react-bootstrap/Modal';
-import { Form, Button, Toast, ToastContainer, Row, Col, InputGroup } from 'react-bootstrap';
-import { useModal } from './ModalContext';
-import { useEffect, useState } from 'react';
-import { API_URL } from '../../constants/const';
-import axios from 'axios';
-import './modalCadReceita.css';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVideo } from '@fortawesome/free-solid-svg-icons';
-import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Button, Form, InputGroup, Toast, ToastContainer } from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
+import { API_URL } from '../../constants/const';
+import { useModal } from './ModalContext';
+import './modalCadReceita.css';
+import DynamicTable from '../dinamicForms/dynamicTable';
 
 function ModalCadReceita() {
     const { isModalOpen, closeModal } = useModal();
@@ -19,7 +19,7 @@ function ModalCadReceita() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    //const [showModalStep, setShowModalStep] = useState(false);
+    const [showModalStep, setShowModalStep] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -66,7 +66,7 @@ function ModalCadReceita() {
             setShowToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true)
-            //setShowModalStep(true)
+            setShowModalStep(true)
             //closeModal(); // Fecha o modal após o sucesso
         } catch (error) {
             console.error('Error:', error);
@@ -75,7 +75,7 @@ function ModalCadReceita() {
 
     const filteredCategorias = categorias.filter(categoria =>
         categoria.tag.toLowerCase().startsWith(searchTerm.toLowerCase())
-      );
+    );
 
     return (
         <>
@@ -114,26 +114,25 @@ function ModalCadReceita() {
                                     type="text"
                                     placeholder="Pesquisar"
                                     onChange={(e) => {
-                                        const {value} = e.target;
-                                        setSearchTerm(value);  
+                                        const { value } = e.target;
+                                        setSearchTerm(value);
                                     }}
                                 />
                             </InputGroup.Text>
                         </InputGroup>
                         <Form.Group controlId="formFile" className="heycheffButton">
                             <Form.Label className='input-file'>
-                                <FontAwesomeIcon icon={faVideo} className="me-2" />
-                                Adicionar Vídeo
+                                <FontAwesomeIcon icon={faImage} className="me-2" />
+                                Adicionar Thumb
                             </Form.Label>
-                            <Form.Control type='file' hidden accept='video/*' onChange={handleFileChange} />
+                            <Form.Control type='file' hidden accept='image/*' onChange={handleFileChange} />
                         </Form.Group>
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                         <p></p>
                     </Form>
-
-                    {<AddDeleteTableRows />}
+                    {showDynamicTable && <DynamicTable />}
 
                 </Modal.Body>
             </Modal>

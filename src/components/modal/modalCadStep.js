@@ -1,7 +1,8 @@
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
+import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
 import { useModal } from './ModalContext';
-
+import './modalCadReceita.css';
 
 
 function ModalCadStep() {
@@ -16,6 +17,8 @@ function ModalCadStep() {
                 </Modal.Header>
 
                 <Modal.Body>
+                    
+                    {<AddDeleteTableRows />}
                     <Form>
                         <Form.Group className="mb-3" controlId="formTitulo">
                             <Form.Control type="file"/>

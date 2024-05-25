@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import TableRows from "./TableRows"
-import { Table } from 'react-bootstrap';
+import { Table, Button, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 function AddDeleteTableRows() {
 
 
@@ -33,17 +35,21 @@ function AddDeleteTableRows() {
 
     }
     return (
-        <Table className="table">
-            <thead>
+        <Table>
+            <thead className="justify-content-center" >
                 <tr>
                     <th>Ingrediente</th>
                     <th>Unidade</th>
                     <th>Medida</th>
-                    <th><button className="btn btn-outline-success" onClick={addTableRows} >+</button></th>
+                    <th className='d-flex justify-content-end'>
+                        <Button variant="success" onClick={addTableRows} >
+                            <FontAwesomeIcon icon={faPlus} />
+                        </Button>
+                    </th>
                 </tr>
 
             </thead>
-            <tbody>
+            <tbody className="justify-content-between">
 
                 <TableRows rowsData={rowsData} deleteTableRows={deleteTableRows} handleChange={handleChange} />
 
