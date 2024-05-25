@@ -13,3 +13,7 @@
 .heycheffButton input {
     display: none;
 }
+
+.text-right{
+    text-align: end;
+}
