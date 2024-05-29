@@ -1,7 +1,7 @@
-import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button, Form, InputGroup, Row, Col, Toast, ToastContainer, Container } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { API_URL } from '../../constants/const';
@@ -22,6 +22,7 @@ function ModalCadReceita() {
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalStep, setShowModalStep] = useState(false);
+    const refInputThumb = useRef();
 
     useEffect(() => {
         (async () => {
@@ -104,23 +105,31 @@ function ModalCadReceita() {
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
                         <Row>
-                            <Col className='d-flex align-items-center justify-content-center mb-3'>
-                                <div className='border rounded p-2 ps-3 pe-3 w-100'>
+                            <Col className='mb-3'>
+                                <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
                                     <Form.Group controlId="formFile" className="heycheffButton text-center">
-                                        <Form.Label className='input-file text-center w-100' style={{ maxWidth: '170px' }}>
+                                        <Form.Label hidden={selectedImage} className='input-file text-center w-100 m-0' style={{ maxWidth: '170px' }}>
                                             <FontAwesomeIcon icon={faImage} className="me-2" />
                                             Adicionar Capa
+                                            <Form.Control ref={refInputThumb} type='file' hidden accept='image/*' onChange={handleFileChange} />
                                         </Form.Label>
-                                        <Form.Control type='file' hidden accept='image/*' onChange={handleFileChange} />
                                         {selectedImage && (
-                                            <div>
-                                                <img src={selectedImage} alt="Preview" style={{ width: '100%', maxWidth: '180px' }} />
+                                            <div className='image-container'>
+                                                <img
+                                                    src={selectedImage}
+                                                    className='thumb'
+                                                    alt="Preview"
+                                                    onClick={() => refInputThumb.current.click()}
+                                                />
+                                                <div className="edit-icon">
+                                                    <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
+                                                </div>
                                             </div>
                                         )}
                                     </Form.Group>
                                 </div>
                             </Col>
-                            <Col md="10">
+                            <Col md="12" lg="10">
                                 <InputGroup className="mb-3">
                                     <InputGroup.Text>Título da Receita</InputGroup.Text>
                                     <Form.Control
@@ -129,7 +138,7 @@ function ModalCadReceita() {
                                         onChange={(e) => setTitulo(e.target.value)}
                                     />
                                 </InputGroup>
-                                <InputGroup className="mb-3">
+                                <InputGroup className="mb-lg-0 mb-3">
                                     <InputGroup.Text>Categorias</InputGroup.Text>
                                     <Form.Control as="div">
                                         {filteredCategorias.map((c) => (
@@ -159,11 +168,9 @@ function ModalCadReceita() {
                                 </InputGroup>
                             </Col>
                         </Row>
-
                         <Button variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
-                        <p></p>
                     </Form>
                     {showDynamicTable && <DynamicTable />}
                 </Modal.Body>

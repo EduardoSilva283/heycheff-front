@@ -14,6 +14,42 @@
     display: none;
 }
 
-.text-right{
+.text-right {
     text-align: end;
+}
+
+.thumb {
+    width: 100%;
+    max-width: 180px;
+    max-height: 230px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container img {
+    display: block;
+    transition: opacity 0.3s;
+    opacity: 1;
+}
+
+.image-container .edit-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.image-container:hover img {
+    opacity: 0.8;
+}
+
+.image-container:hover .edit-icon {
+    opacity: 1;
 }
