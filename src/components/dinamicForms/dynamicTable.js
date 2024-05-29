@@ -15,6 +15,7 @@ function DynamicTable() {
 
 
   const handleFileChange = (e) => {
+    console.log(e,e.target.files[0])
     setFile(e.target.files[0]);
   };
 
@@ -82,7 +83,7 @@ function DynamicTable() {
         <Modal.Body>
 
           <Form>
-            <Form.Group controlId="formFile" className="heycheffButton">
+            <Form.Group controlId="addVideoStep" className="heycheffButton">
               <Form.Label className='input-file'>
                 <FontAwesomeIcon icon={faVideo} className="me-2" />
                 Adicionar Video

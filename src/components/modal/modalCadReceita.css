@@ -50,6 +50,10 @@
     opacity: 0.8;
 }
 
+.image-container:hover img.disable-opacity {
+    opacity: 1;
+}
+
 .image-container:hover .edit-icon {
     opacity: 1;
 }

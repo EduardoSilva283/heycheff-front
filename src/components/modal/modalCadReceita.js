@@ -107,7 +107,7 @@ function ModalCadReceita() {
                         <Row>
                             <Col className='mb-3'>
                                 <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
-                                    <Form.Group controlId="formFile" className="heycheffButton text-center">
+                                    <Form.Group controlId="addThumb" className="heycheffButton text-center">
                                         <Form.Label hidden={selectedImage} className='input-file text-center w-100 m-0' style={{ maxWidth: '170px' }}>
                                             <FontAwesomeIcon icon={faImage} className="me-2" />
                                             Adicionar Capa
@@ -117,13 +117,15 @@ function ModalCadReceita() {
                                             <div className='image-container'>
                                                 <img
                                                     src={selectedImage}
-                                                    className='thumb'
+                                                    className={`${isSubmitting ? 'disable-opacity' : ''} thumb`}
                                                     alt="Preview"
-                                                    onClick={() => refInputThumb.current.click()}
+                                                    onClick={() => (isSubmitting ? null : refInputThumb.current.click())}
                                                 />
-                                                <div className="edit-icon">
-                                                    <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
-                                                </div>
+                                                {!isSubmitting && (
+                                                    <div className="edit-icon">
+                                                        <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </Form.Group>
@@ -168,7 +170,7 @@ function ModalCadReceita() {
                                 </InputGroup>
                             </Col>
                         </Row>
-                        <Button variant="warning" type="submit" disabled={isSubmitting}>
+                        <Button className='mb-3' variant="warning" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                     </Form>
