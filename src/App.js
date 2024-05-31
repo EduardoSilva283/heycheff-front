@@ -4,6 +4,7 @@ import { ModalProvider } from './components/modal/ModalContext';
 import ModalCadStep from './components/modal/modalCadStep';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/header/header';
+import Feed from './components/feed/Feed'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       
     </ModalProvider>
 
+    <Feed/>
 
     </div>
   );
