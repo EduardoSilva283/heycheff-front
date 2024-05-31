@@ -1,61 +1,52 @@
-import { useState } from 'react';
-import TableRows from "./TableRows"
-import { Table, Button, Form } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-function AddDeleteTableRows() {
+import TableRows from "./TableRows";
+import { ModalProvider } from '../modal/ModalContext';
 
-
-    const [rowsData, setRowsData] = useState([]);
-
+function AddDeleteTableRows({ rowsData, setRowsData }) {
+    
     const addTableRows = () => {
-
         const rowsInput = {
-            ingrediente: '',
-            unidade: '',
+            desc: '',
+            unidMedida: '',
             medida: ''
-        }
-        setRowsData([...rowsData, rowsInput])
+        };
+        setRowsData([...rowsData, rowsInput]);
+    };
 
-    }
     const deleteTableRows = (index) => {
         const rows = [...rowsData];
         rows.splice(index, 1);
         setRowsData(rows);
-    }
+    };
 
     const handleChange = (index, evnt) => {
-
         const { name, value } = evnt.target;
         const rowsInput = [...rowsData];
         rowsInput[index][name] = value;
         setRowsData(rowsInput);
+    };
 
-
-
-    }
     return (
         <Table>
-            <thead className="justify-content-center" >
+            <thead className="justify-content-center">
                 <tr>
                     <th>Ingrediente</th>
                     <th>Unidade</th>
                     <th>Medida</th>
                     <th className='d-flex justify-content-end'>
-                        <Button variant="success" onClick={addTableRows} >
+                        <Button variant="success" onClick={addTableRows}>
                             <FontAwesomeIcon icon={faPlus} />
                         </Button>
                     </th>
                 </tr>
-
             </thead>
             <tbody className="justify-content-between">
-
                 <TableRows rowsData={rowsData} deleteTableRows={deleteTableRows} handleChange={handleChange} />
-
             </tbody>
         </Table>
-    )
-
+    );
 }
-export default AddDeleteTableRows
+
+export default AddDeleteTableRows;

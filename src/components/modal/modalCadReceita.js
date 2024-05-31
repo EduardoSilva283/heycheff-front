@@ -22,6 +22,7 @@ function ModalCadReceita() {
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalStep, setShowModalStep] = useState(false);
+    const [idReceita, setIdReceita] = useState(null);
     const refInputThumb = useRef();
 
     useEffect(() => {
@@ -82,6 +83,9 @@ function ModalCadReceita() {
                 },
             });
             console.log('Success:', response.data);
+            const { seqId } = response.data;
+            setIdReceita(seqId); 
+            console.log(idReceita);
             setShowToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true);
@@ -174,7 +178,7 @@ function ModalCadReceita() {
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                     </Form>
-                    {showDynamicTable && <DynamicTable />}
+                    {showDynamicTable && <DynamicTable idReceita={idReceita}/>}
                 </Modal.Body>
             </Modal>
 
