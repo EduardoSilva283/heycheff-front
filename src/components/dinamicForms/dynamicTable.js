@@ -41,7 +41,7 @@ function DynamicTable({ idReceita }) {
 
     try {
       if (isEditing) {
-        await axios.put(`${API_URL}/steps/${currentStep.id}`, formData, {
+        await axios.put(`${API_URL}heycheff/steps/${currentStep.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

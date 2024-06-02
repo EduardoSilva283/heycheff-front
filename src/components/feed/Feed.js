@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Card from '../cards/Card'
+import ReceitaCard from '../cards/ReceitaCard';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { API_URL } from '../../constants/const';
+import Container from 'react-bootstrap/Container';
+
+const API_URL = 'http://localhost:6015';
 
 function Grid() {
     const [receitas, setReceitas] = useState([]);
@@ -11,7 +13,7 @@ function Grid() {
     useEffect(() => {
         const fetchReceitas = async () => {
             try {
-                const response = await axios.get(API_URL + '/receitas');
+                const response = await axios.get(`${API_URL}/heycheff/receitas`);
                 setReceitas(response.data);
             } catch (error) {
                 console.error('Erro ao buscar receitas:', error);
@@ -22,20 +24,16 @@ function Grid() {
     }, []);
 
     return (
-        <Row xs={1} md={2} className="g-4">
-            {Array.from({ length: 4 }).map((_, idx) => (
-                <Col key={idx}>
-                    {receitas.map((receita) => (
-                        <Card key={receita.id} receita={receita} />
-                    ))}
-                </Col>
-            ))}
-        </Row>
+        <Container fluid style={{marginTop: '10px'}}>
+            <Row xs={1} md={4} className="g-2">
+                {receitas.map((receita) => (
+                    <Col key={receita.id}>
+                        <ReceitaCard receita={receita} />
+                    </Col>
+                ))}
+            </Row>
+        </Container>
     );
 }
-
-
-
-
 
 export default Grid;
