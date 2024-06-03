@@ -28,7 +28,6 @@ function DynamicTable({ idReceita }) {
   const handleCloseModal = () => {
     setShowModal(false);
     setCurrentStep({ id: null, description: '' });
-    setFile(null); // Reset file input when modal closes
   };
 
   const handleAddOrEditStep = async () => {

@@ -2,12 +2,14 @@ import { faImage, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
-import { Button, Form, InputGroup, Row, Col, Toast, ToastContainer, Container } from 'react-bootstrap';
+import { Button, Form, InputGroup, Row, Col, Toast, ToastContainer} from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { API_URL } from '../../constants/const';
 import { useModal } from './ModalContext';
 import './modalCadReceita.css';
 import DynamicTable from '../dinamicForms/dynamicTable';
+import CustomToast from '../toast/CustomToast';
+import logo from '../../assets/hey_cheff_black.png';
 import { height } from '@fortawesome/free-brands-svg-icons/fa42Group';
 
 function ModalCadReceita() {
@@ -21,9 +23,11 @@ function ModalCadReceita() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [showModalStep, setShowModalStep] = useState(false);
     const [idReceita, setIdReceita] = useState(null);
     const refInputThumb = useRef();
+    const [errorToast, setErrorToast] = useState(false);
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+    const [showErrorToast, setShowErrorToast] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -69,6 +73,11 @@ function ModalCadReceita() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!titulo || !file || selectedCategorias.length === 0) {
+            setShowErrorToast(true); // Exibir o Toast de erro
+            return;
+        }
         const formData = new FormData();
         formData.append('titulo', titulo);
         formData.append('tags', JSON.stringify(selectedCategorias));
@@ -86,10 +95,9 @@ function ModalCadReceita() {
             const { seqId } = response.data;
             setIdReceita(seqId); 
             console.log(idReceita);
-            setShowToast(true); // Exibir o Toast de sucesso
+            setShowSuccessToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true);
-            setShowModalStep(true);
             //closeModal(); // Fecha o modal após o sucesso
         } catch (error) {
             console.error('Error:', error);
@@ -182,14 +190,19 @@ function ModalCadReceita() {
                 </Modal.Body>
             </Modal>
 
-            <ToastContainer position="top-end" className="p-3">
-                <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
-                    <Toast.Header>
-                        <strong className="me-auto">Sucesso</strong>
-                    </Toast.Header>
-                    <Toast.Body>Receita cadastrada com sucesso!</Toast.Body>
-                </Toast>
-            </ToastContainer>
+            <CustomToast
+                show={showSuccessToast}
+                onClose={() => setShowSuccessToast(false)}
+                type="success"
+                message="Receita cadastrada com sucesso!"
+            />
+
+            <CustomToast
+                show={showErrorToast}
+                onClose={() => setShowErrorToast(false)}
+                type="error"
+                message="Por favor, preencha todos os campos obrigatórios."
+            />
         </>
     );
 }
