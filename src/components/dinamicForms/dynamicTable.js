@@ -34,19 +34,24 @@ function DynamicTable({ idReceita }) {
   };
 
   const handleShowModal = (step = { id: null, description: '', index: steps.length + 1 }) => {
-    if (step.id === null) {
-      
-    }
     setCurrentStep(step);
-    console.log('Ver cod de Step',step.id)
+    setModoPreparo(step.description);
+    if (step.id !== null) {
+
+      setRowsData(step.ingredientes || []);
+    } else {
+      setRowsData([]);
+    }
     setIsEditing(step.id !== null);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    
     setShowModal(false);
     setCurrentStep({ id: null, description: '', index: null });
+    setModoPreparo('');
+    setRowsData([]);
+    setFile(null);
   };
 
   const handleAddOrEditStep = async () => {
@@ -56,11 +61,11 @@ function DynamicTable({ idReceita }) {
     }
     formData.append('modoPreparo', modoPreparo);
     formData.append('produtos', JSON.stringify(rowsData));
-    formData.append('step', currentStep.index);
+    formData.append('stepNumber', currentStep.index);
 
     try {
       if (isEditing) {
-        await axios.put(`${API_URL}/steps/${currentStep.id}`, formData, {
+        await axios.patch(`${API_URL}/receitas/${idReceita}/steps/${currentStep.index}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -84,13 +89,12 @@ function DynamicTable({ idReceita }) {
 
   const handleDeleteStep = async (id) => {
     try {
-      await axios.delete(`${API_URL}/receita/${idReceita}/steps/${id}`);
+      await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${id}`);
       setSteps(steps.filter(step => step.id !== id).map((step, idx) => ({ ...step, index: idx + 1 })));
     } catch (error) {
       console.error('Error:', error);
     }
   };
-
 
   return (
     <>
@@ -104,7 +108,7 @@ function DynamicTable({ idReceita }) {
         </thead>
         <tbody>
           {steps.map((step) => (
-            <tr key={step.id}>
+            <tr key={step.index}>
               <td>{step.index}</td>
               <td>{step.description}</td>
               <td>
@@ -119,7 +123,7 @@ function DynamicTable({ idReceita }) {
 
       <Modal show={showModal} onHide={handleCloseModal} fullscreen={true}>
         <Modal.Header closeButton>
-          <Modal.Title>Cadastrar Step</Modal.Title>
+          <Modal.Title>{isEditing ? 'Editar Step' : 'Cadastrar Step'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -130,7 +134,7 @@ function DynamicTable({ idReceita }) {
               </Form.Label>
               <Form.Control type='file' hidden accept='video/*' onChange={handleFileChange} />
             </Form.Group>
-            
+
             <AddDeleteTableRows rowsData={rowsData} setRowsData={setRowsData} />
 
             <Form.Group controlId="addModoPreparo">
