@@ -98,7 +98,7 @@ function ModalCadReceita() {
             setShowSuccessToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true);
-            //closeModal(); // Fecha o modal após o sucesso
+           
         } catch (error) {
             console.error('Error:', error);
         }
