@@ -8,7 +8,8 @@ import { API_URL } from '../../constants/const';
 
 function DynamicTable({ idReceita }) {
   const [steps, setSteps] = useState([]);
-  const [currentStep, setCurrentStep] = useState({ id: null, description: '', index: null });
+  const [listSteps, setListSteps] = useState([]);
+  const [currentStep, setCurrentStep] = useState({ stepNumber: null, modoPreparo: '', index: null, path: null, produtos: [] });
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
@@ -20,7 +21,7 @@ function DynamicTable({ idReceita }) {
     const fetchSteps = async () => {
       try {
         const response = await axios.get(`${API_URL}/receitas/${idReceita}`);
-        setSteps(response.data.steps);
+        setListSteps(response.data.steps);
       } catch (error) {
         console.error('Error fetching steps:', error);
       }
@@ -31,24 +32,53 @@ function DynamicTable({ idReceita }) {
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    console.log(e.target.files[0])
   };
 
-  const handleShowModal = (step = { id: null, description: '', index: steps.length + 1 }) => {
+  const handleShowModal = (step = { stepNumber: null, modoPreparo: '', index: steps.length + 1, path: null, produtos: [] }) => {
     setCurrentStep(step);
-    setModoPreparo(step.description);
-    if (step.id !== null) {
+    setModoPreparo(step.modoPreparo);
+    if (step.index !== null) {
 
-      setRowsData(step.ingredientes || []);
+      setRowsData(step.produtos || []);
     } else {
       setRowsData([]);
     }
-    setIsEditing(step.id !== null);
+    //setRowsData(step.produtos || []);
+    setIsEditing(false);
     setShowModal(true);
+    handleListStep()
+  };
+
+  const handleEditStep = async (step) => {
+    try {
+      const response = await axios.get(`${API_URL}/receitas/${idReceita}/steps/${step.stepNumber}`);
+      const stepData = response.data;
+      setCurrentStep({ id: stepData.stepNumber, modoPreparo: stepData.modoPreparo, index: stepData.stepNumber, stepNumber: stepData.stepNumber });
+      setFile(stepData.path)
+      setModoPreparo(stepData.modoPreparo);
+      setRowsData(stepData.produtos || []);
+      setIsEditing(true);
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error fetching step details:', error);
+    }
+  };
+
+
+  const handleListStep = async (step) => {
+    try {
+      const response = await axios.get(`${API_URL}/receitas/${idReceita}`);
+      setListSteps(response.data.steps);
+
+    } catch (error) {
+      console.error('Error fetching steps:', error);
+    }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setCurrentStep({ id: null, description: '', index: null });
+    setCurrentStep({ id: null, modoPreparo: '', index: null, });
     setModoPreparo('');
     setRowsData([]);
     setFile(null);
@@ -70,7 +100,9 @@ function DynamicTable({ idReceita }) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        setSteps(steps.map(step => (step.id === currentStep.id ? { ...step, description: modoPreparo } : step)));
+
+        setSteps(steps.map(step => (step.id === currentStep.id ? { ...step, modoPreparo: modoPreparo } : step)));
+
       } else {
         const response = await axios.post(`${API_URL}/receitas/${idReceita}/steps`, formData, {
           headers: {
@@ -78,19 +110,19 @@ function DynamicTable({ idReceita }) {
           },
         });
         const newStep = response.data;
-        setSteps([...steps, { id: newStep.id, description: modoPreparo, index: steps.length + 1 }]);
+        setSteps([...steps, { id: newStep.id, modoPreparo: modoPreparo, index: steps.length + 1 }]);
       }
     } catch (error) {
       console.error('Error:', error);
     }
-
+    handleListStep()
     handleCloseModal();
   };
 
-  const handleDeleteStep = async (id) => {
+  const handleDeleteStep = async (stepNumber) => {
     try {
-      await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${id}`);
-      setSteps(steps.filter(step => step.id !== id).map((step, idx) => ({ ...step, index: idx + 1 })));
+      await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${stepNumber}`);
+      //setSteps(steps.filter(step => step.index !== index).map((step, idx) => ({ ...step, index: idx + 1 })));
     } catch (error) {
       console.error('Error:', error);
     }
@@ -102,18 +134,20 @@ function DynamicTable({ idReceita }) {
         <thead>
           <tr>
             <th>#</th>
+            <th>Video</th>
             <th>Modo de Preparo</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          {steps.map((step) => (
-            <tr key={step.index}>
-              <td>{step.index}</td>
-              <td>{step.description}</td>
+          {listSteps.map((step) => (
+            <tr key={step.stepNumber}>
+              <td>{step.stepNumber}</td>
+              <td>{step.path}</td>
+              <td>{step.modoPreparo}</td>
               <td>
-                <Button variant="warning" onClick={() => handleShowModal(step)}>Editar</Button>{' '}
-                <Button variant="danger" onClick={() => handleDeleteStep(step.index)}>Excluir</Button>
+                <Button variant="warning" onClick={() => handleEditStep(step)}>Editar</Button>{' '}
+                <Button variant="danger" onClick={() => handleDeleteStep(step.stepNumber)}>Excluir</Button>
               </td>
             </tr>
           ))}
@@ -133,6 +167,7 @@ function DynamicTable({ idReceita }) {
                 Adicionar Vídeo
               </Form.Label>
               <Form.Control type='file' hidden accept='video/*' onChange={handleFileChange} />
+              
             </Form.Group>
 
             <AddDeleteTableRows rowsData={rowsData} setRowsData={setRowsData} />
