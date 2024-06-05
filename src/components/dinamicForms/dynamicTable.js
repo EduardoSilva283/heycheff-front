@@ -33,6 +33,7 @@ function DynamicTable({ idReceita }) {
 
 		fetchSteps();
 	}, [idReceita]);
+  
 	const createVideoThumb = (event) => {
 		const video = event.target;
 		const canvas = document.createElement('canvas');
@@ -58,7 +59,9 @@ function DynamicTable({ idReceita }) {
 		}
 	};
 	const handleShowModal = (step = { stepNumber: null, modoPreparo: '', index: steps.length + 1, path: null, produtos: [] }) => {
-		setCurrentStep(step);
+		setFile(null);
+    setSelectedVideo(null);
+    setCurrentStep(step);
 		setModoPreparo(step.modoPreparo);
 		if (step.index !== null) {
 
@@ -85,6 +88,7 @@ function DynamicTable({ idReceita }) {
 			console.error('Error fetching step details:', error);
 		}
 	};
+
 	const handleListStep = async (step) => {
 		try {
 			const response = await axios.get(`${API_URL}/receitas/${idReceita}`);
@@ -102,7 +106,7 @@ function DynamicTable({ idReceita }) {
 		setFile(null);
 
 	};
-	const handleAddOrEditStep = async () => {
+	const handleAddStep = async () => {
 		const formData = new FormData();
 		if (file) {
 			formData.append('video', file);
@@ -121,7 +125,8 @@ function DynamicTable({ idReceita }) {
 
 				setSteps(steps.map(step => (step.id === currentStep.id ? { ...step, modoPreparo: modoPreparo } : step)));
 
-			} else {
+			} 
+      if(!isEditing) {
 				const response = await axios.post(`${API_URL}/receitas/${idReceita}/steps`, formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
@@ -133,9 +138,11 @@ function DynamicTable({ idReceita }) {
 		} catch (error) {
 			console.error('Error:', error);
 		}
-		handleListStep()
+		handleListStep();
 		handleCloseModal();
+    
 	};
+
 	const handleDeleteStep = async (stepNumber) => {
 		try {
 			await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${stepNumber}`);
@@ -280,7 +287,7 @@ function DynamicTable({ idReceita }) {
 
 						<br></br>
 
-						<Button variant="warning" onClick={handleAddOrEditStep}>Salvar Step</Button>
+						<Button variant="warning" onClick={handleAddStep}>Salvar Step</Button>
 					</Form>
 				</Modal.Body>
 			</Modal >
