@@ -1,23 +1,19 @@
-import './App.css';
+import Feed from './components/feed/Feed';
+import Header from './components/header/header';
 import ModalCadReceita from './components/modal/modalCadReceita';
 import { ModalProvider } from './components/modal/ModalContext';
-import ModalCadStep from './components/modal/modalCadStep';
+
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from './components/header/header';
-import Feed from './components/feed/Feed'
 
 function App() {
   return (
     <div className="App">
-
-    <ModalProvider>
-      <Header />
-      <ModalCadReceita />
-      
-    </ModalProvider>
-
-    <Feed/>
-
+      <ModalProvider>
+        <Header />
+        <ModalCadReceita />
+      </ModalProvider>
+      <Feed />
     </div>
   );
 }
