@@ -122,7 +122,7 @@ function DynamicTable({ idReceita }) {
   const handleDeleteStep = async (stepNumber) => {
     try {
       await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${stepNumber}`);
-      //setSteps(steps.filter(step => step.index !== index).map((step, idx) => ({ ...step, index: idx + 1 })));
+      setListSteps(listSteps.filter(step => step.stepNumber !== stepNumber));
     } catch (error) {
       console.error('Error:', error);
     }
