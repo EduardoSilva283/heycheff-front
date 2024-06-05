@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Modal } from 'react-bootstrap';
+import { Table, Button, Form, Modal, Container } from 'react-bootstrap';
 import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import { API_URL } from '../../constants/const';
+
 
 function DynamicTable({ idReceita }) {
   const [steps, setSteps] = useState([]);
@@ -82,6 +83,7 @@ function DynamicTable({ idReceita }) {
     setModoPreparo('');
     setRowsData([]);
     setFile(null);
+
   };
 
   const handleAddOrEditStep = async () => {
@@ -128,6 +130,24 @@ function DynamicTable({ idReceita }) {
     }
   };
 
+  const handleFinalize = async () => {
+    try {
+      await axios.patch(`${API_URL}/receitas/${idReceita}`, {
+        status: true
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      handleCloseModal();
+      
+
+    } catch (error) {
+      console.error('Error finalizing the cadastro:', error);
+      alert('Erro ao finalizar o cadastro.');
+    }
+  };
+
   return (
     <>
       <Table striped bordered hover>
@@ -153,7 +173,17 @@ function DynamicTable({ idReceita }) {
           ))}
         </tbody>
       </Table>
+
       <Button variant="warning" onClick={() => handleShowModal()}>Adicionar Step</Button>
+
+      <p></p>
+
+      {listSteps.length >= 2 && (
+        <Button variant="warning" onClick={handleFinalize} className="mt-3">
+          Finalizar Cadastro
+        </Button>
+      )}
+
 
       <Modal show={showModal} onHide={handleCloseModal} fullscreen={true}>
         <Modal.Header closeButton>
@@ -167,7 +197,7 @@ function DynamicTable({ idReceita }) {
                 Adicionar Vídeo
               </Form.Label>
               <Form.Control type='file' hidden accept='video/*' onChange={handleFileChange} />
-              
+
             </Form.Group>
 
             <AddDeleteTableRows rowsData={rowsData} setRowsData={setRowsData} />
