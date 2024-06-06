@@ -44,8 +44,8 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
                                 name="unidMedida"
                             >
                                 <option value="">Selecione a unidade</option>
-                                {medidas.map((medida, index) => (
-                                    <option key={index} value={medida.index}>
+                                {medidas.map((medida, idx) => (
+                                    <option key={idx} value={medida.index}>
                                         {medida.descricao}
                                     </option>
                                 ))}

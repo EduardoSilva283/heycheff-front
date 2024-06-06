@@ -1,16 +1,15 @@
-import { faImage, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
-import { Button, Form, InputGroup, Row, Col, Toast, ToastContainer} from 'react-bootstrap';
+import { useEffect, useRef, useState } from 'react';
+import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { API_URL } from '../../constants/const';
-import { useModal } from './ModalContext';
-import './modalCadReceita.css';
 import DynamicTable from '../dinamicForms/dynamicTable';
 import CustomToast from '../toast/CustomToast';
-import logo from '../../assets/hey_cheff_black.png';
-import { height } from '@fortawesome/free-brands-svg-icons/fa42Group';
+import { useModal } from './ModalContext';
+import './modalCadReceita.css';
+
 
 function ModalCadReceita() {
     const { isModalOpen, closeModal } = useModal();

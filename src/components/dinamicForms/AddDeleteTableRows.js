@@ -2,7 +2,6 @@ import { Table, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import TableRows from "./TableRows";
-import { ModalProvider } from '../modal/ModalContext';
 
 function AddDeleteTableRows({ rowsData, setRowsData }) {
     
