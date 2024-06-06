@@ -11,6 +11,7 @@ function DynamicTable({ idReceita }) {
   const [currentStep, setCurrentStep] = useState({ id: null, description: '', index: null });
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [file, setFile] = useState(null);
   const [modoPreparo, setModoPreparo] = useState('');
   const [rowsData, setRowsData] = useState([]); // State para os ingredientes
@@ -124,7 +125,7 @@ function DynamicTable({ idReceita }) {
         <Modal.Body>
           <Form>
             <Form.Group controlId="addVideoStep" className="heycheffButton">
-              <Form.Label className='input-file'>
+              <Form.Label hidden={selectedImage} className='input-file'>
                 <FontAwesomeIcon icon={faVideo} className="me-2" />
                 Adicionar Vídeo
               </Form.Label>
