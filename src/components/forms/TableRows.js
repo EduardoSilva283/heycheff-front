@@ -1,9 +1,9 @@
-import { Button, Form } from "react-bootstrap";
-import { API_URL } from '../../constants/const';
-import axios from "axios";
-import { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useState } from 'react';
+import { Button, Form } from "react-bootstrap";
+
+import api from '../../service/api';
 
 function TableRows({ rowsData, deleteTableRows, handleChange }) {
     const [medidas, setMedidas] = useState([]);
@@ -11,7 +11,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const response = await axios.get(API_URL + '/produtos/0/medidas');
+                const response = await api.get('/produtos/0/medidas');
                 setMedidas(response.data);
             } catch (err) {
                 console.log(err);

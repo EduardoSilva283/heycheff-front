@@ -1,10 +1,10 @@
-import { Table, Button } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Table } from 'react-bootstrap';
 import TableRows from "./TableRows";
 
 function AddDeleteTableRows({ rowsData, setRowsData }) {
-    
+
     const addTableRows = () => {
         const rowsInput = {
             desc: '',

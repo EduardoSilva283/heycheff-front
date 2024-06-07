@@ -1,20 +1,20 @@
-import Feed from './components/feed/Feed';
-import Header from './components/header/header';
-import ModalCadReceita from './components/modal/modalCadReceita';
-import { ModalProvider } from './components/modal/ModalContext';
-
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import FormLoginV2 from './components/core/login/FormLoginV2';
+import Home from './components/home/Home';
+import FormLogin from './components/core/login/FormLogin';
 
 function App() {
   return (
-    <div className="App">
-      <ModalProvider>
-        <Header />
-        <ModalCadReceita />
-      </ModalProvider>
-      <Feed />
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<FormLoginV2 />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

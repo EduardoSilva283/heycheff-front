@@ -3,8 +3,8 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import Navbar from 'react-bootstrap/Navbar';
-import logo from '../../assets/hey_cheff_black.png';
-import { useModal } from '../modal/ModalContext';
+import logo from '../../../assets/hey_cheff_black.png';
+import { useModal } from '../../shared/modal/ModalContext';
 import './header.css';
 
 function Header() {

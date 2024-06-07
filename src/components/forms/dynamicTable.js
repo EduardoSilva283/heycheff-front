@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Table, Button, Form, Modal, Container } from 'react-bootstrap';
-import AddDeleteTableRows from '../dinamicForms/AddDeleteTableRows';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import { API_URL } from '../../constants/const';
-import '../modal/modalCadReceita.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Form, Modal, Table } from 'react-bootstrap';
 
+import api from '../../service/api';
+import AddDeleteTableRows from '../forms/AddDeleteTableRows';
+
+import '../shared/modal/modalCadReceita.css';
 
 function DynamicTable({ idReceita }) {
 	const [steps, setSteps] = useState([]);
@@ -24,7 +24,7 @@ function DynamicTable({ idReceita }) {
 		// Load steps from the API when the component mounts
 		const fetchSteps = async () => {
 			try {
-				const response = await axios.get(`${API_URL}/receitas/${idReceita}`);
+				const response = await api.get(`/receitas/${idReceita}`);
 				setListSteps(response.data.steps);
 			} catch (error) {
 				console.error('Error fetching steps:', error);
@@ -33,7 +33,7 @@ function DynamicTable({ idReceita }) {
 
 		fetchSteps();
 	}, [idReceita]);
-  
+
 	const createVideoThumb = (event) => {
 		const video = event.target;
 		const canvas = document.createElement('canvas');
@@ -60,8 +60,8 @@ function DynamicTable({ idReceita }) {
 	};
 	const handleShowModal = (step = { stepNumber: null, modoPreparo: '', index: steps.length + 1, path: null, produtos: [] }) => {
 		setFile(null);
-    setSelectedVideo(null);
-    setCurrentStep(step);
+		setSelectedVideo(null);
+		setCurrentStep(step);
 		setModoPreparo(step.modoPreparo);
 		if (step.index !== null) {
 
@@ -76,7 +76,7 @@ function DynamicTable({ idReceita }) {
 	};
 	const handleEditStep = async (step) => {
 		try {
-			const response = await axios.get(`${API_URL}/receitas/${idReceita}/steps/${step.stepNumber}`);
+			const response = await api.get(`/receitas/${idReceita}/steps/${step.stepNumber}`);
 			const stepData = response.data;
 			setCurrentStep({ id: stepData.stepNumber, modoPreparo: stepData.modoPreparo, index: stepData.stepNumber, stepNumber: stepData.stepNumber });
 			setFile(stepData.path)
@@ -91,7 +91,7 @@ function DynamicTable({ idReceita }) {
 
 	const handleListStep = async (step) => {
 		try {
-			const response = await axios.get(`${API_URL}/receitas/${idReceita}`);
+			const response = await api.get(`/receitas/${idReceita}`);
 			setListSteps(response.data.steps);
 
 		} catch (error) {
@@ -117,7 +117,7 @@ function DynamicTable({ idReceita }) {
 
 		try {
 			if (isEditing) {
-				await axios.patch(`${API_URL}/receitas/${idReceita}/steps/${currentStep.index}`, formData, {
+				await api.patch(`/receitas/${idReceita}/steps/${currentStep.index}`, formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
@@ -125,9 +125,9 @@ function DynamicTable({ idReceita }) {
 
 				setSteps(steps.map(step => (step.id === currentStep.id ? { ...step, modoPreparo: modoPreparo } : step)));
 
-			} 
-      if(!isEditing) {
-				const response = await axios.post(`${API_URL}/receitas/${idReceita}/steps`, formData, {
+			}
+			if (!isEditing) {
+				const response = await api.post(`/receitas/${idReceita}/steps`, formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
@@ -140,12 +140,12 @@ function DynamicTable({ idReceita }) {
 		}
 		handleListStep();
 		handleCloseModal();
-    
+
 	};
 
 	const handleDeleteStep = async (stepNumber) => {
 		try {
-			await axios.delete(`${API_URL}/receitas/${idReceita}/steps/${stepNumber}`);
+			await api.delete(`/receitas/${idReceita}/steps/${stepNumber}`);
 			setListSteps(listSteps.filter(step => step.stepNumber !== stepNumber));
 		} catch (error) {
 			console.error('Error:', error);
@@ -153,7 +153,7 @@ function DynamicTable({ idReceita }) {
 	};
 	const handleFinalize = async () => {
 		try {
-			await axios.patch(`${API_URL}/receitas/${idReceita}`, {
+			await api.patch(`/receitas/${idReceita}`, {
 				status: true
 			}, {
 				headers: {

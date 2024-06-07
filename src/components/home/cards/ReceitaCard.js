@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { API_URL_MEDIA } from '../../constants/const';
+import { API_URL_MEDIA } from '../../../constants/const';
 import './ReceitaCard.css'
 
 
