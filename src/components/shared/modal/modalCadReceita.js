@@ -18,13 +18,11 @@ function ModalCadReceita() {
     const [selectedCategorias, setSelectedCategorias] = useState([]);
     const [file, setFile] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [idReceita, setIdReceita] = useState(null);
     const refInputThumb = useRef();
-    const [errorToast, setErrorToast] = useState(false);
     const [showSuccessToast, setShowSuccessToast] = useState(false);
     const [showErrorToast, setShowErrorToast] = useState(false);
 

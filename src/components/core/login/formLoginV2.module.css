@@ -30,14 +30,29 @@
     font-size: 12px;
 }
 
-.container a {
+.password {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: end;
+}
+
+.eye {
+    position: absolute;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.container u {
+    cursor: pointer;
     color: #333;
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
 
-.container button {
+.container button,
+input[type=submit] {
     background-color: tomato;
     color: #fff;
     font-size: 12px;
@@ -51,21 +66,25 @@
     cursor: pointer;
 }
 
-.container button.escondido {
+.container button.escondido,
+input[type=submit].escondido {
     background-color: tomato;
     border-color: #fff;
 }
 
-.container button:hover {
+.container button:hover,
+input[type=submit]:hover {
     background-color: black;
 }
 
-.container button.cadastro {
+.container button.cadastro,
+input[type=submit].cadastro {
     background-color: orange;
     border-color: #fff;
 }
 
-.container button.cadastro:hover {
+.container button.cadastro:hover,
+input[type=submit].cadastro:hover {
     background-color: black;
 }
 
@@ -79,7 +98,9 @@
     height: 100%;
 }
 
-.container input {
+.container input[type=text],
+input[type=email],
+input[type=password] {
     background-color: #eee;
     border: none;
     margin: 8px 0;

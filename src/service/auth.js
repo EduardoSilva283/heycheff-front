@@ -6,21 +6,27 @@ const authApi = axios.create({
     baseURL: API_URL,
 });
 
-export const authenticate = async (username, password) => {
-    authApi.post("/auth", {
+export async function authenticate(username, password) {
+    const status = authApi.post("/auth", {
         username: username,
         password: password
     }).then(resp => {
         window.localStorage.setItem("JWT", resp.data.token);
         window.localStorage.setItem("expiration", resp.data.expiration);
+        return resp.status;
     })
         .catch(error => console.log("Error authenticating: " + error));
+
+    return status;
 }
 
-export const register = async (email, username, password) => {
-    authApi.post("/user", {
+export async function register(email, username, password) {
+    const status = authApi.post("/user", {
         email: email,
         username: username,
         password: password
-    }).catch(error => console.log("Error creating user: " + error));
+    }).then(resp => resp.status)
+        .catch(error => console.log("Error creating user: " + error));
+
+    return status;
 }

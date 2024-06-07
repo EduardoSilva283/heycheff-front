@@ -1,19 +1,36 @@
 import { faApple, faFacebook, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authenticate, register } from '../../../service/auth';
 import CustomToast from '../../shared/toast/CustomToast';
 import styles from './formLoginV2.module.css';
 
 function FormLoginV2() {
+    const navigate = useNavigate();
+
+    const [type, setType] = useState("password");
+    const [icon, setIcon] = useState(faEyeSlash);
+
     const [isActive, setIsActive] = useState(false);
     const [signupToast, setSignupToast] = useState(false);
+
     const [login, setLogin] = useState({ username: "", password: "" });
     const [signup, setSignup] = useState({ email: "", username: "", password: "" });
 
     const changeForm = (bool) => {
         setIsActive(bool);
+    }
+
+    const handleToggle = () => {
+        if (type === "password") {
+            setIcon(faEye);
+            setType("text");
+        } else {
+            setIcon(faEyeSlash);
+            setType("password");
+        }
     }
 
     const handleLogin = (field) => {
@@ -24,21 +41,23 @@ function FormLoginV2() {
         setSignup(prev => ({ ...prev, [field.target.name]: field.target.value }));
     }
 
-    const doAuthenticate = async () => {
-        await authenticate(login.username, login.password)
-            .then(resp => {
-                if (resp.status === 200) redirect("/");
-            });
+    const doAuthenticate = async (event) => {
+        event.preventDefault();
+
+        const status = await authenticate(login.username, login.password);
+
+        if (status === 200) navigate("/");
     }
 
-    const doRegister = async () => {
-        await register(signup.email, signup.username, signup.password)
-            .then(resp => {
-                if (resp.status === 201) {
-                    setSignupToast(true);
-                    changeForm(true);
-                }
-            });
+    const doRegister = async (event) => {
+        event.preventDefault();
+
+        const status = await register(signup.email, signup.username, signup.password);
+
+        if (status === 201) {
+            setSignupToast(true);
+            changeForm(!isActive);
+        }
     }
 
     return (
@@ -47,11 +66,11 @@ function FormLoginV2() {
                 show={signupToast}
                 onClose={() => setSignupToast(false)}
                 type="success"
-                message="Usuário cadastrado com sucesso" />
+                message={`${signup.username} cadastrado com sucesso`} />
 
             <div className={`${styles.container} ${isActive ? styles.active : ''}`} id="container">
                 <div className={`${styles.formContainer} ${styles.signUp}`}>
-                    <form>
+                    <form onSubmit={event => doRegister(event)}>
                         <h1>Criar a sua conta!</h1>
                         <div className={styles.iconeSocial}>
                             <div><FontAwesomeIcon icon={faGoogle} /></div>
@@ -64,14 +83,19 @@ function FormLoginV2() {
                             onChange={email => handleSignup(email)} />
                         <input required type="text" placeholder="Username" name="username"
                             onChange={username => handleSignup(username)} />
-                        <input required type="password" placeholder="Senha" name="password"
-                            onChange={password => handleSignup(password)} />
-                        <a href="#"><u>Esqueceu sua senha?</u></a>
-                        <button className={styles.escondido} onClick={doRegister}>Cadastrar</button>
+                        <div className={styles.password}>
+                            <input required type={type} placeholder="Senha" name="password"
+                                onChange={password => handleSignup(password)} />
+                            <span className={styles.eye} onClick={handleToggle}>
+                                <FontAwesomeIcon icon={icon} size="lg" />
+                            </span>
+                        </div>
+                        <u>Esqueceu sua senha?</u>
+                        <input type="submit" value="Cadastrar" className={styles.escondido} />
                     </form>
                 </div>
                 <div className={`${styles.formContainer} ${styles.signIn}`}>
-                    <form>
+                    <form onSubmit={event => doAuthenticate(event)}>
                         <h1>Entre na sua conta!</h1>
                         <div className={styles.iconeSocial}>
                             <div><FontAwesomeIcon icon={faGoogle} /></div>
@@ -82,10 +106,15 @@ function FormLoginV2() {
                         <span>Ou use seu E-mail e entre com sua senha</span>
                         <input required type="text" placeholder="Username" name="username"
                             onChange={username => handleLogin(username)} />
-                        <input required type="password" placeholder="Senha" name="password"
-                            onChange={password => handleLogin(password)} />
-                        <a href="#"><u>Esqueceu sua senha?</u></a>
-                        <button className={styles.cadastro} onClick={doAuthenticate}>Entrar</button>
+                        <div className={styles.password}>
+                            <input required type={type} placeholder="Senha" name="password"
+                                onChange={password => handleLogin(password)} />
+                            <span className={styles.eye} onClick={handleToggle}>
+                                <FontAwesomeIcon icon={icon} size="lg" />
+                            </span>
+                        </div>
+                        <u>Esqueceu sua senha?</u>
+                        <input type="submit" value="Entrar" className={styles.cadastro} />
                     </form>
                 </div>
                 <div className={styles.painelContainer}>

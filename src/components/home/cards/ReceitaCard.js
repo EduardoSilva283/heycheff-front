@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
-import { API_URL_MEDIA } from '../../../constants/const';
-import './ReceitaCard.css'
 
+import { displayMedia } from '../../../service/media';
 
 function ReceitaCard({ receita }) {
-  const imageUrl = `${API_URL_MEDIA}${receita.thumb}`;
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchImageUrl = async () => setImageUrl(await displayMedia(receita.thumb));
+    fetchImageUrl();
+  }, [receita.thumb]);
 
   return (
-    <Card className="receita-card">
-      <Card.Img variant="top" src={imageUrl} alt={receita.titulo} />
+    <Card>
+      <Card.Img variant="top" src={imageUrl} alt={receita.titulo}
+        onChange={() => URL.revokeObjectURL(imageUrl)} />
       <Card.Body>
         <Card.Title variant="bottom">{receita.titulo}</Card.Title>
       </Card.Body>

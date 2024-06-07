@@ -24,7 +24,7 @@ function Feed() {
 
     return (
         <Container fluid className='mt-4'>
-            <Row xs={1} md={4} className="g-2">
+            <Row xs={1} md={2} lg={3} className='g-2'>
                 {receitas.map((receita) => (
                     <Col key={receita.id}>
                         <ReceitaCard receita={receita} />
