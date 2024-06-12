@@ -4,6 +4,7 @@ import './App.css';
 import FormLoginV2 from './components/core/login/FormLoginV2';
 import Home from './components/home/Home';
 import FormLogin from './components/core/login/FormLogin';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path='/login' element={<FormLoginV2 />} />
         </Routes>
       </BrowserRouter>
+      <Analytics />
     </>
   );
 }
