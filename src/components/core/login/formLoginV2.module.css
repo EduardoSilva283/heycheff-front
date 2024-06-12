@@ -1,0 +1,254 @@
+.body {
+    background: linear-gradient(to left, #ffd186, #f44646cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 800px;
+    height: 480px;
+    max-width: 100%;
+    min-width: 480px;
+}
+
+.container p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+
+.container span {
+    font-size: 12px;
+}
+
+.password {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: end;
+}
+
+.eye {
+    position: absolute;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.container u {
+    cursor: pointer;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    margin: 15px 0 10px;
+}
+
+.container button,
+input[type=submit] {
+    background-color: tomato;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.container button.escondido,
+input[type=submit].escondido {
+    background-color: tomato;
+    border-color: #fff;
+}
+
+.container button:hover,
+input[type=submit]:hover {
+    background-color: black;
+}
+
+.container button.cadastro,
+input[type=submit].cadastro {
+    background-color: orange;
+    border-color: #fff;
+}
+
+.container button.cadastro:hover,
+input[type=submit].cadastro:hover {
+    background-color: black;
+}
+
+.container form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+}
+
+.container input[type=text],
+input[type=email],
+input[type=password] {
+    background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+}
+
+.formContainer {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.signIn {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+/*Troca*/
+.container.active .signIn {
+    transform: translateX(100%);
+}
+
+/*****************/
+.signUp {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.active .signUp {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move 0.6s;
+}
+
+@keyframes move {
+
+    0%,
+    49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+.iconeSocial {
+    margin: 20px 0;
+}
+
+.iconeSocial div {
+    border: 1px solid #ccc;
+    border-radius: 20%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 3px;
+    width: 30px;
+    height: 30px;
+}
+
+.iconeSocial a:hover {
+    border: 1px solid #333;
+    border-radius: 20%;
+}
+
+.painelContainer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    border-radius: 150px 0 0 100px;
+    z-index: 1000;
+}
+
+.container.active .painelContainer {
+    transform: translateX(-100%);
+    border-radius: 0 150px 100px 0;
+}
+
+.painel {
+    background-color: tomato;
+    height: 100%;
+    background: linear-gradient(to right, orange, tomato);
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.container.active .painel {
+    transform: translateX(50%);
+}
+
+.container.active .painelEsquerda {
+    transform: translateX(0);
+}
+
+.container.active .painelDireita {
+    transform: translateX(200%);
+}
+
+
+.posicaoPainel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+    text-align: center;
+    top: 0;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.painelEsquerda {
+    transform: translateX(-200%);
+}
+
+.painelDireita {
+    right: 0;
+    transform: translateX(0);
+}
+
+.btn {
+    background-color: white;
+}
+
+.btn:hover {
+    background-color: #333;
+}

@@ -1,15 +1,15 @@
 import { faEdit, faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { API_URL } from '../../constants/const';
-import DynamicTable from '../dinamicForms/dynamicTable';
+
+import api from '../../../service/api';
+import DynamicTable from '../../forms/dynamicTable';
 import CustomToast from '../toast/CustomToast';
 import { useModal } from './ModalContext';
-import './modalCadReceita.css';
 
+import './modalCadReceita.css';
 
 function ModalCadReceita() {
     const { isModalOpen, closeModal } = useModal();
@@ -18,20 +18,18 @@ function ModalCadReceita() {
     const [selectedCategorias, setSelectedCategorias] = useState([]);
     const [file, setFile] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [idReceita, setIdReceita] = useState(null);
     const refInputThumb = useRef();
-    const [errorToast, setErrorToast] = useState(false);
     const [showSuccessToast, setShowSuccessToast] = useState(false);
     const [showErrorToast, setShowErrorToast] = useState(false);
 
     useEffect(() => {
         (async () => {
             try {
-                const categorias = await axios.get(API_URL + '/tags');
+                const categorias = await api.get('/tags');
                 categorias.data.forEach(element => {
                     element.checked = false;
                 });
@@ -85,19 +83,19 @@ function ModalCadReceita() {
         console.log(Object.fromEntries(formData))
         //TODO: adicionar verificação para os valores
         try {
-            const response = await axios.post(API_URL + '/receitas', formData, {
+            const response = await api.post('/receitas', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             console.log('Success:', response.data);
             const { seqId } = response.data;
-            setIdReceita(seqId); 
+            setIdReceita(seqId);
             console.log(idReceita);
             setShowSuccessToast(true); // Exibir o Toast de sucesso
             setIsSubmitting(true);
             setShowDynamicTable(true);
-           
+
         } catch (error) {
             console.error('Error:', error);
         }
@@ -185,7 +183,7 @@ function ModalCadReceita() {
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                     </Form>
-                    {showDynamicTable && <DynamicTable idReceita={idReceita}/>}
+                    {showDynamicTable && <DynamicTable idReceita={idReceita} />}
                 </Modal.Body>
             </Modal>
 
@@ -205,4 +203,5 @@ function ModalCadReceita() {
         </>
     );
 }
+
 export default ModalCadReceita;

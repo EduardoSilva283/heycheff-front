@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 function DynamicForm() {
   const [steps, setSteps] = useState([{ description: '' }]);
@@ -38,7 +38,7 @@ function DynamicForm() {
         <Button variant="primary" onClick={handleAddStep}>
           Adicionar Step
         </Button>
-        
+
       </Form.Group>
       <Button variant="warning" type="submit">
         Finalizar Cadastro

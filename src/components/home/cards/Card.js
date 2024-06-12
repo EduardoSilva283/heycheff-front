@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap'; 
-import { API_URL } from '../../constants/const';
+import { API_URL } from '../../../constants/const';
 
 function ReceitaCard({ receita }) {
   const imageUrl = receita.thumb.startsWith('http') ? receita.thumb : `${API_URL}${receita.thumb}`;
