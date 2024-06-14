@@ -9,7 +9,7 @@ import DynamicTable from '../../forms/dynamicTable';
 import CustomToast from '../toast/CustomToast';
 import { useModal } from './ModalContext';
 
-import './modalCadReceita.css';
+import styles from './modalCadReceita.module.css';
 
 function ModalCadReceita() {
     const { isModalOpen, closeModal } = useModal();
@@ -117,7 +117,7 @@ function ModalCadReceita() {
                             <Col className='mb-3'>
                                 <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
                                     <Form.Group controlId="addThumb" className="heycheffButton text-center">
-                                        <Form.Label hidden={selectedImage} className='input-file text-center w-100 m-0' style={{ maxWidth: '170px' }}>
+                                        <Form.Label hidden={selectedImage} className={`${styles["input-file"]} input-file text-center w-100 m-0`} style={{ maxWidth: '170px' }}>
                                             <FontAwesomeIcon icon={faImage} className="me-2" />
                                             Adicionar Capa
                                             <Form.Control ref={refInputThumb} type='file' hidden accept='image/*' onChange={handleFileChange} />

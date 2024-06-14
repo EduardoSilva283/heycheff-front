@@ -6,7 +6,7 @@ import { Button, Form, Modal, Table } from 'react-bootstrap';
 import api from '../../service/api';
 import AddDeleteTableRows from '../forms/AddDeleteTableRows';
 
-import '../shared/modal/modalCadReceita.css';
+import '../shared/modal/modalCadReceita.module.css';
 
 function DynamicTable({ idReceita }) {
 	const [steps, setSteps] = useState([]);
