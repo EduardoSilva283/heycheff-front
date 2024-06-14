@@ -11,3 +11,9 @@ export async function displayMedia(url) {
     const blob = await resp.blob();
     return URL.createObjectURL(blob);
 }
+
+export async function getBlobMedia(url) {
+    const resp = await fetchMedia(url);
+    const blob = await resp.blob();
+    return blob;
+}
