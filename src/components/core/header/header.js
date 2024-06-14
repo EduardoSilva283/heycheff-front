@@ -3,12 +3,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import Navbar from 'react-bootstrap/Navbar';
+
 import logo from '../../../assets/hey_cheff_black.png';
-import { useModal } from '../../shared/modal/ModalContext';
+
 import './header.css';
+import { Link } from 'react-router-dom';
 
 function Header() {
-    const { openModal } = useModal();
     return (
         <>
             <Navbar>
@@ -22,11 +23,13 @@ function Header() {
                             aria-label="Search"
                         />
                     </Form>
-                    <Button variant="outline-danger" onClick={openModal} >Cadastrar Receita</Button>
-
+                    <Link to={'/cadastro-receita'}>
+                        <Button variant="outline-danger">Cadastrar Receita</Button>
+                    </Link>
                 </Container>
             </Navbar>
         </>
     )
 }
+
 export default Header;

@@ -3,6 +3,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { authenticate, register } from '../../../service/auth';
 import CustomToast from '../../shared/toast/CustomToast';
 import styles from './formLoginV2.module.css';
@@ -15,6 +16,7 @@ function FormLoginV2() {
 
     const [isActive, setIsActive] = useState(false);
     const [signupToast, setSignupToast] = useState(false);
+    const [loginToast, setLoginToast] = useState(false);
 
     const [login, setLogin] = useState({ username: "", password: "" });
     const [signup, setSignup] = useState({ email: "", username: "", password: "" });
@@ -47,6 +49,8 @@ function FormLoginV2() {
         const status = await authenticate(login.username, login.password);
 
         if (status === 200) navigate("/");
+
+        setLoginToast(true);
     }
 
     const doRegister = async (event) => {
@@ -67,6 +71,12 @@ function FormLoginV2() {
                 onClose={() => setSignupToast(false)}
                 type="success"
                 message={`${signup.username} cadastrado com sucesso`} />
+
+            <CustomToast
+                show={loginToast}
+                onClose={() => setLoginToast(false)}
+                type="error"
+                message="Usuário ou senha incorretos" />
 
             <div className={`${styles.container} ${isActive ? styles.active : ''}`} id="container">
                 <div className={`${styles.formContainer} ${styles.signUp}`}>

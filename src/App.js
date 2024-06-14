@@ -1,10 +1,11 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
+
 import FormLoginV2 from './components/core/login/FormLoginV2';
+import CadReceita from './components/forms/receita/CadReceita';
 import Home from './components/home/Home';
-import FormLogin from './components/core/login/FormLogin';
-import { Analytics } from '@vercel/analytics/react';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 function App() {
   return (
@@ -13,9 +14,9 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<FormLoginV2 />} />
+          <Route path='/cadastro-receita' element={<CadReceita />} />
         </Routes>
       </BrowserRouter>
-      <Analytics />
     </>
   );
 }
