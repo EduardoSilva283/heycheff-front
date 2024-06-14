@@ -20,7 +20,6 @@ function ModalReviewReceita() {
                     const { steps, tags } = response.data;
                     const thumb = await displayMedia(modalData.thumb);
                     setReceita({ ...modalData, steps, tags, thumb });
-                    console.log(receita); //TODO: retirar
                 } catch (error) {
                     console.error('Erro ao buscar receita:', error);
                 }
@@ -112,14 +111,18 @@ function AccordionBody({ step }) {
 
     return (
         <Accordion.Body onEntering={handleEntering}>
-            <video
-                width="100%"
-                controls
-                style={{ minWidth: '300px', maxWidth: '600px', maxHeight: '600px' }}
-            >
-                {videoSrc && <source src={videoSrc} type={videoType} />}
-                Seu navegador não suporta vídeos HTML5.
-            </video>
+            <div className="text-center">
+                <video
+
+                    width="100%"
+                    controls
+                    style={{ minWidth: '300px', maxWidth: '600px', maxHeight: '600px' }}
+                >
+                    {videoSrc && <source src={videoSrc} type={videoType} />}
+                    Seu navegador não suporta vídeos HTML5.
+                </video>
+            </div>
+            <hr/>
             <Table>
                 <thead className="justify-content-center">
                     <tr>
