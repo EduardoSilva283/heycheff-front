@@ -2,5 +2,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Consolas Bold', 'Consolas', sans-serif;
+}
+
+.accordion-button[aria-expanded="true"] {
+    background-color: #FFD186;
+}
+
+.accordion-button:focus {
+    background-color: #FFD186;
+    box-shadow: 0 0 0 4px #ffd18690;
 }

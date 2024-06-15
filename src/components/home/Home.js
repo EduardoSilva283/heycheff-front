@@ -1,16 +1,16 @@
-import Header from '../core/header/header';
-import Feed from './feed/Feed'
+import Header from '../core/header/Header';
 import { ModalProvider } from '../shared/modal/ModalContext';
-import ModalCadReceita from '../shared/modal/modalCadReceita';
+import ModalReviewReceita from '../shared/modal/ModalReviewReceita';
+import Feed from './feed/Feed';
 
 function Home() {
     return (
         <>
+            <Header />
             <ModalProvider>
-                <Header />
-                <ModalCadReceita />
+                <Feed />
+                <ModalReviewReceita />
             </ModalProvider>
-            <Feed />
         </>
     );
 }

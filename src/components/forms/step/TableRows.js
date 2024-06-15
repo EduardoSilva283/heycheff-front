@@ -3,16 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { Button, Form } from "react-bootstrap";
 
-import api from '../../service/api';
+import api from '../../../service/api';
 
 function TableRows({ rowsData, deleteTableRows, handleChange }) {
     const [medidas, setMedidas] = useState([]);
+    const [produtos, setProdutos] = useState([]);
+    const urlProdutos = "/produtos";
 
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const response = await api.get('/produtos/0/medidas');
-                setMedidas(response.data);
+                const respMedidas = await api.get(urlProdutos + '/0/medidas');
+                setMedidas(respMedidas.data);
+                const respProdutos = await api.get(urlProdutos);
+                setProdutos(respProdutos.data);
             } catch (err) {
                 console.log(err);
             }
@@ -28,12 +32,18 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
                     <tr key={index}>
                         <td>
                             <Form.Control
-                                type="text"
+                                type='text'
                                 value={desc}
                                 onChange={(evnt) => handleChange(index, evnt)}
                                 name="desc"
                                 placeholder="Ingrediente"
+                                list='produtos'
                             />
+                            <datalist id='produtos'>
+                                {produtos.map(prod => (
+                                    <option key={prod.produtoDesc}>{prod.produtoDesc}</option>
+                                ))}
+                            </datalist>
                         </td>
 
                         <td>
@@ -43,7 +53,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
                                 onChange={(evnt) => handleChange(index, evnt)}
                                 name="unidMedida"
                             >
-                                <option value="">Selecione a unidade</option>
+                                <option>Selecione a unidade</option>
                                 {medidas.map((medida, idx) => (
                                     <option key={idx} value={medida.index}>
                                         {medida.descricao}
@@ -54,7 +64,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
 
                         <td>
                             <Form.Control
-                                type="text"
+                                type="number"
                                 value={medida}
                                 onChange={(evnt) => handleChange(index, evnt)}
                                 name="medida"

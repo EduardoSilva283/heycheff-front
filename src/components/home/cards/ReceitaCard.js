@@ -12,7 +12,7 @@ function ReceitaCard({ receita }) {
   }, [receita.thumb]);
 
   return (
-    <Card>
+    <Card style={{ cursor: 'pointer' }}>
       <Card.Img variant="top" src={imageUrl} alt={receita.titulo}
         onChange={() => URL.revokeObjectURL(imageUrl)} />
       <Card.Body>
