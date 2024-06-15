@@ -23,20 +23,8 @@
     max-height: 60vh;
 }
 
-.modo-preparo {
-    max-width: 80vw;
-}
-
 .btn-edit {
-    margin-right: 8px;
-}
-
-.thumb-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+    margin: 8px 8px 8px 0;
 }
 
 .thumb {

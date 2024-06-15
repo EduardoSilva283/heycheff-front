@@ -1,168 +1,48 @@
-import { faVideo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Form, Modal, Table } from 'react-bootstrap';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import React from 'react';
+import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import api from '../../../service/api';
 import { displayMediaType } from '../../../service/media';
-import AddDeleteTableRows from './AddDeleteTableRows';
-
-import '../receita/cadReceita.css';
 import { useModal } from '../../shared/modal/ModalContext';
 
+import '../receita/cadReceita.css';
+
 function DynamicTable({ idReceita }) {
-	const [steps, setSteps] = useState([]);
-	const [listSteps, setListSteps] = useState([]);
-	const [currentStep, setCurrentStep] = useState({
-		stepNumber: null, modoPreparo: '', index: null, path: null, produtos: []
-	});
-	const [isEditing, setIsEditing] = useState(false);
-	const [showModal, setShowModal] = useState(false);
-	const [file, setFile] = useState(null);
-	const [modoPreparo, setModoPreparo] = useState('');
-	const [rowsData, setRowsData] = useState([]); // State para os ingredientes
-	const [selectedVideo, setSelectedVideo] = useState(null);
-	const [videoThumbs, setVideoThumbs] = useState(new Map());
-	const { openCadStepModal } = useModal();
-	const refInputVideo = useRef();
+	const {
+		openModal: openCadStepModal,
+		setContextObject: setCurrentStep,
+		contextList: stepList,
+		setContextList: setStepList,
+		contextMap: videoThumbs
+	} = useModal();
+
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		// Load steps from the API when the component mounts
-		const fetchSteps = async () => {
-			try {
-				const response = await api.get(`/receitas/${idReceita}`);
-				setListSteps(response.data.steps);
-			} catch (error) {
-				console.error('Error fetching steps:', error);
-			}
-		};
-
-		fetchSteps();
-	}, [idReceita]);
-
-	const createVideoThumb = (event) => {
-		const video = event.target;
-		const canvas = document.createElement('canvas');
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
-		const context = canvas.getContext('2d');
-		context?.drawImage(video, 0, 0, canvas.width, canvas.height);
-		context?.canvas.toBlob(blob => setSelectedVideo((current) => current.img = blob),
-			'image/jpeg', 1);
-	};
-
-	const handleFileChange = (e) => {
-		const arquivo = e.target.files[0];
-		if (arquivo) {
-			setFile(arquivo);
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setSelectedVideo({
-					video: reader.result,
-					type: arquivo.type,
-				});
-			}
-			reader.readAsDataURL(arquivo);
-			console.log(e, reader);
-		}
-	};
-
-	const handleShowModal = (step = { stepNumber: null, modoPreparo: '', index: steps.length + 1, path: null, produtos: [] }) => {
-		setFile(null);
-		setSelectedVideo(null);
-		setCurrentStep(step);
-		setModoPreparo(step.modoPreparo);
-
-		if (step.index !== null) {
-			setRowsData(step.produtos || []);
-		} else {
-			setRowsData([]);
-		}
-
-		setIsEditing(false);
-		setShowModal(true);
-		handleListStep()
-	};
 
 	const handleEditStep = async (step) => {
 		try {
 			const stepData = (await api.get(`/receitas/${idReceita}/steps/${step.stepNumber}`)).data;
 			const [video, type] = await displayMediaType(stepData.path);
 			setCurrentStep({
-				id: stepData.stepNumber,
+				stepNumber: stepData.stepNumber,
 				modoPreparo: stepData.modoPreparo,
-				index: stepData.stepNumber,
-				stepNumber: stepData.stepNumber
+				produtos: stepData.produtos || [],
+				isEditing: true,
+				selectedVideo: { video: video, type: type },
+				video: video
 			});
-			setFile(video);
-			setSelectedVideo({ video: video, type: type });
-			setModoPreparo(stepData.modoPreparo);
-			setRowsData(stepData.produtos || []);
-			setIsEditing(true);
-			setShowModal(true);
+			openCadStepModal();
 		} catch (error) {
 			console.error('Error fetching step details:', error);
 		}
 	};
 
-	const handleListStep = async () => {
-		try {
-			const response = (await api.get(`/receitas/${idReceita}`));
-			setListSteps(response.data.steps);
-		} catch (error) {
-			console.error('Error fetching steps:', error);
-		}
-	};
-
-	const handleCloseModal = () => {
-		setShowModal(false);
-		setCurrentStep({ id: null, modoPreparo: '', index: null, });
-		setModoPreparo('');
-		setRowsData([]);
-		setFile(null);
-	};
-
-	const handleAddStep = async () => {
-		const formData = new FormData();
-		if (file) {
-			formData.append('video', file);
-		}
-		formData.append('modoPreparo', modoPreparo);
-		formData.append('produtos', JSON.stringify(rowsData));
-		formData.append('stepNumber', currentStep.index);
-
-		try {
-			if (isEditing) {
-				await api.patch(`/receitas/${idReceita}/steps/${currentStep.index}`, formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				});
-
-				setSteps(steps.map(step => (step.id === currentStep.id ? { ...step, modoPreparo: modoPreparo } : step)));
-
-			} else {
-				const response = await api.post(`/receitas/${idReceita}/steps`, formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				});
-				const newStep = response.data;
-				setSteps([...steps, { id: newStep.id, modoPreparo: modoPreparo, index: steps.length + 1 }]);
-			}
-		} catch (error) {
-			console.error('Error:', error);
-		}
-		handleListStep();
-		handleCloseModal();
-	};
-
 	const handleDeleteStep = async (stepNumber) => {
 		try {
 			await api.delete(`/receitas/${idReceita}/steps/${stepNumber}`);
-			setListSteps(listSteps.filter(step => step.stepNumber !== stepNumber));
+			setStepList(stepList.filter(step => step.stepNumber !== stepNumber));
 		} catch (error) {
 			console.error('Error:', error);
 		}
@@ -177,139 +57,51 @@ function DynamicTable({ idReceita }) {
 					'Content-Type': 'application/json',
 				},
 			});
-			handleCloseModal();
 			navigate("/");
 		} catch (error) {
-			console.error('Error finalizing the cadastro:', error);
+			console.error('Error finalizing receipt:', error);
 			alert('Erro ao finalizar o cadastro.');
 		}
 	};
 
-	const [contextMenu, setContextMenu] = useState({
-		visible: false,
-		x: 0,
-		y: 0,
-	});
-
-	const handleContextMenu = (event) => {
-		event.preventDefault();
-		setContextMenu({
-			x: event.pageX,
-			y: event.pageY,
-			visible: true,
-		});
-		console.log(contextMenu, event, 2);
-	};
-
-	const handleClick = () => {
-		setContextMenu({
-			...contextMenu,
-			visible: false,
-		});
-		console.log(contextMenu, 1)
-	};
-
 	return (
 		<>
-			<Table bordered striped='columns' hover>
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Video</th>
-						<th>Modo de Preparo</th>
-						<th>Ações</th>
-					</tr>
-				</thead>
-				<tbody>
-					{listSteps.map(step => (
-						<tr key={step.stepNumber}>
-							<td>{step.stepNumber}</td>
-							<td className='thumb-container'>
-								<img className='thumb' src='' alt='video-thumb' />
-							</td>
-							<td className='modo-preparo'>{step.modoPreparo}</td>
-							<td className='d-flex justify-content-around align-items-center'>
-								<Button variant="warning" className='btn-edit' onClick={() => handleEditStep(step)}>Editar</Button>
-								<Button variant="danger" onClick={() => handleDeleteStep(step.stepNumber)}>Excluir</Button>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</Table>
+			<DataTable value={stepList} rowHover stripedRows size='large'
+				emptyMessage='Não há steps cadastrados'>
+				<Column field='stepNumber' header='#' className='px-3' align='center'
+					alignHeader='center' />
+				<Column header='Vídeo' className='p-2' align='center' alignHeader='center'
+					body={
+						step => <img className='thumb' src={videoThumbs.get(step.stepNumber)}
+							alt='video-thumb' />
+					} />
+				<Column field='modoPreparo' header='Modo de Preparo' className='px-3'
+					style={{ textAlign: 'justify', width: '100%', maxWidth: '50%' }}
+					align='center' alignHeader='center' />
+				<Column header="Ações" align='center' alignHeader='center' body={
+					step => <div>
+						<Button variant="warning" className='btn-edit'
+							onClick={() => handleEditStep(step)}>
+							Editar
+						</Button>
+						<Button variant="danger" onClick={() => handleDeleteStep(step.stepNumber)}>
+							Excluir
+						</Button>
+					</div>
+				} />
+			</DataTable>
 
 			<div>
-				<Button variant="warning" onClick={() => handleShowModal()}>Adicionar Step</Button>
+				<Button className='mt-3' variant="warning" onClick={openCadStepModal}>Adicionar Step</Button>
 			</div>
 
 			<div className='d-flex justify-content-end'>
-				{listSteps.length > 1 && (
+				{stepList.length > 1 && (
 					<Button variant="warning" onClick={handleFinalize} className="mt-4">
 						Finalizar Cadastro
 					</Button>
 				)}
 			</div>
-
-			<Modal show={showModal} onHide={handleCloseModal} fullscreen={true}>
-				<Modal.Header closeButton>
-					<Modal.Title>{isEditing ? 'Editar Step' : 'Cadastrar Step'}</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Form>
-						<Form.Group controlId="addVideoStep" className="heycheffButton">
-							<Form.Label hidden={selectedVideo} className='input-file'>
-								<FontAwesomeIcon icon={faVideo} className="me-2" />
-								Adicionar Vídeo
-								<Form.Control ref={refInputVideo} type='file' hidden accept='video/*' onChange={handleFileChange} />
-							</Form.Label>
-							{selectedVideo && (
-								<div onClick={handleClick} style={{ textAlign: "center", position: 'relative' }}>
-									<video
-										controls
-										className='step-video'
-										onLoadedMetadata={createVideoThumb}
-										onContextMenu={handleContextMenu}
-									>
-										<source src={selectedVideo.video} type={selectedVideo.type} />
-										Your browser does not support HTML5 video.
-									</video>
-
-									{contextMenu.visible && (
-										<ul
-											style={{
-												position: 'absolute',
-												top: `${contextMenu.y}px`,
-												left: `${contextMenu.x}px`,
-												background: 'white',
-												border: '1px solid #ccc',
-												listStyle: 'none',
-												padding: '10px',
-												margin: 0,
-												zIndex: 1000,
-											}}
-										>
-											<li onClick={() => alert('Opção 1 selecionada')}>Opção 1</li>
-										</ul>
-									)}
-								</div>
-							)}
-						</Form.Group>
-
-						<AddDeleteTableRows rowsData={rowsData} setRowsData={setRowsData} />
-
-						<Form.Group controlId="addModoPreparo">
-							<Form.Label>Modo de Preparo</Form.Label>
-							<Form.Control
-								as="textarea"
-								value={modoPreparo}
-								onChange={(e) => setModoPreparo(e.target.value)}
-							/>
-						</Form.Group>
-						<Button variant="warning" className='mt-4' onClick={handleAddStep}>
-							Salvar Step
-						</Button>
-					</Form>
-				</Modal.Body>
-			</Modal >
 		</>
 	);
 }

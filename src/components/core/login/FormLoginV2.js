@@ -15,7 +15,9 @@ function FormLoginV2() {
     const [icon, setIcon] = useState(faEyeSlash);
 
     const [isActive, setIsActive] = useState(false);
-    const [signupToast, setSignupToast] = useState(false);
+    const [signupToast, setSignupToast] = useState({
+        active: false, type: 'error', message: 'username ou e-mail já cadastrado'
+    });
     const [loginToast, setLoginToast] = useState(false);
 
     const [login, setLogin] = useState({ username: "", password: "" });
@@ -59,18 +61,27 @@ function FormLoginV2() {
         const status = await register(signup.email, signup.username, signup.password);
 
         if (status === 201) {
-            setSignupToast(true);
+            setSignupToast({
+                type: 'success',
+                message: `${signup.username} cadastrado com sucesso`
+            });
             changeForm(!isActive);
         }
+
+        setSignupToastActivce(true);
+    }
+
+    const setSignupToastActivce = (isActive) => {
+        setSignupToast(toast => ({ ...toast, active: isActive }));
     }
 
     return (
         <div className={styles.body}>
             <CustomToast
-                show={signupToast}
-                onClose={() => setSignupToast(false)}
-                type="success"
-                message={`${signup.username} cadastrado com sucesso`} />
+                show={signupToast.active}
+                onClose={() => setSignupToastActivce(false)}
+                type={signupToast.type}
+                message={signupToast.message} />
 
             <CustomToast
                 show={loginToast}

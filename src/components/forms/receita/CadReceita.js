@@ -1,15 +1,15 @@
 import { faEdit, faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, InputGroup, Row, ToggleButton } from 'react-bootstrap';
 
 import api from '../../../service/api';
 import CustomToast from '../../shared/toast/CustomToast';
 
-import DynamicTable from '../step/DynamicTable';
-import './cadReceita.css';
 import { ModalProvider } from '../../shared/modal/ModalContext';
 import CadStepModal from '../step/CadStepModal';
+import DynamicTable from '../step/DynamicTable';
+import './cadReceita.css';
 
 function CadReceita() {
     const [categorias, setCategorias] = useState([]);
@@ -41,18 +41,20 @@ function CadReceita() {
     }, []);
 
     const handleCategoriaChange = (e, categoria) => {
-        const { checked } = e.target;
-        setSelectedCategorias((itemCategoria) => {
-            if (checked) {
-                return Array.from(new Set([...itemCategoria, categoria]));
-            }
-            return itemCategoria.filter(a => a.id !== categoria.id);
-        })
-        setCategorias((elements) => {
-            const categoriaFind = elements.find(a => a.id === categoria.id);
-            categoriaFind.checked = checked;
-            return elements;
-        })
+        if (!isSubmitting) {
+            const { checked } = e.target;
+            setSelectedCategorias((itemCategoria) => {
+                if (checked) {
+                    return Array.from(new Set([...itemCategoria, categoria]));
+                }
+                return itemCategoria.filter(a => a.id !== categoria.id);
+            })
+            setCategorias((elements) => {
+                const categoriaFind = elements.find(a => a.id === categoria.id);
+                categoriaFind.checked = checked;
+                return elements;
+            })
+        }
     };
 
     const handleFileChange = (e) => {
@@ -71,7 +73,7 @@ function CadReceita() {
         e.preventDefault();
 
         if (!titulo || !file || selectedCategorias.length === 0) {
-            setShowErrorToast(true); // Exibir o Toast de erro
+            setShowErrorToast(true);
             return;
         }
         const formData = new FormData();
@@ -88,7 +90,7 @@ function CadReceita() {
             });
             const { seqId } = response.data;
             setIdReceita(seqId);
-            setShowSuccessToast(true); // Exibir o Toast de sucesso
+            setShowSuccessToast(true);
             setIsSubmitting(true);
             setShowDynamicTable(true);
         } catch (error) {
@@ -101,86 +103,85 @@ function CadReceita() {
     );
 
     return (
-        <>
-            <Container>
-                <h1 className='mt-4 mb-4'>Cadastrar Receita</h1>
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Col lg="2" className='mb-3'>
-                            <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
-                                <Form.Group controlId="addThumb" className="heycheffButton text-center">
-                                    <Form.Label hidden={selectedImage} className='input-file text-center w-100 m-0' style={{ maxWidth: '170px' }}>
-                                        <FontAwesomeIcon icon={faImage} className="me-2" />
-                                        Adicionar Capa
-                                        <Form.Control ref={refInputThumb} type='file' hidden accept='image/*' onChange={handleFileChange} />
-                                    </Form.Label>
-                                    {selectedImage && (
-                                        <div className='image-container'>
-                                            <img
-                                                src={selectedImage}
-                                                className={`${isSubmitting ? 'disable-opacity' : ''} thumb`}
-                                                alt="Preview"
-                                                onClick={() => (isSubmitting ? null : refInputThumb.current.click())}
-                                            />
-                                            {!isSubmitting && (
-                                                <div className="edit-icon">
-                                                    <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </Form.Group>
-                            </div>
-                        </Col>
-                        <Col lg="10">
-                            <InputGroup className="mb-3">
-                                <InputGroup.Text>Título da Receita</InputGroup.Text>
+        <Container className='mb-4 overflow-hidden'>
+            <h1 className='mt-4 mb-4'>Cadastrar Receita</h1>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <Col lg="2" className='mb-3'>
+                        <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
+                            <Form.Group controlId="addThumb" className="heycheffButton text-center">
+                                <Form.Label hidden={selectedImage} className='input-file text-center w-100 m-0' style={{ maxWidth: '170px' }}>
+                                    <FontAwesomeIcon icon={faImage} className="me-2" />
+                                    Adicionar Capa
+                                    <Form.Control ref={refInputThumb} type='file' hidden accept='image/*' onChange={handleFileChange} />
+                                </Form.Label>
+                                {selectedImage && (
+                                    <div className='image-container'>
+                                        <img
+                                            src={selectedImage}
+                                            className={`${isSubmitting ? 'disable-opacity' : ''} thumb`}
+                                            alt="Preview"
+                                            onClick={() => (isSubmitting ? null : refInputThumb.current.click())}
+                                        />
+                                        {!isSubmitting && (
+                                            <div className="edit-icon">
+                                                <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </Form.Group>
+                        </div>
+                    </Col>
+                    <Col lg="10">
+                        <InputGroup className="mb-3">
+                            <InputGroup.Text>Título da Receita</InputGroup.Text>
+                            <Form.Control
+                                type="text"
+                                value={titulo}
+                                onChange={(e) => setTitulo(e.target.value)}
+                            />
+                        </InputGroup>
+                        <InputGroup className="mb-3 categories">
+                            <InputGroup.Text>Categorias</InputGroup.Text>
+                            <Form.Control as='div' size='sm' className='row'>
+                                {filteredCategorias.map((c) => (
+                                    <ToggleButton
+                                        className='m-0 p-1 col-xxl-2 col-lg-3 col-md-4 col-sm-6'
+                                        id={c.id}
+                                        type='checkbox'
+                                        key={'tag-' + c.id}
+                                        variant='outline-warning'
+                                        checked={c.checked}
+                                        value={c.tag}
+                                        onChange={(e) => handleCategoriaChange(e, c)}
+                                    >
+                                        {c.tag}
+                                    </ToggleButton>
+                                ))}
+                            </Form.Control>
+                            <InputGroup.Text className='search-bar'>
                                 <Form.Control
                                     type="text"
-                                    value={titulo}
-                                    onChange={(e) => setTitulo(e.target.value)}
+                                    placeholder="Pesquisar"
+                                    onChange={(e) => {
+                                        const { value } = e.target;
+                                        setSearchTerm(value);
+                                    }}
                                 />
-                            </InputGroup>
-                            <InputGroup className="mb-3 categories">
-                                <InputGroup.Text>Categorias</InputGroup.Text>
-                                <Form.Control as="div" className='row'>
-                                    {filteredCategorias.map((c) => (
-                                        <Form.Check
-                                            className='col-xl-2 col-lg-3 col-md-4 col-sm-5'
-                                            id={'tag' + c.id}
-                                            key={c.id}
-                                            inline
-                                            label={c.tag}
-                                            value={c.tag}
-                                            type="checkbox"
-                                            checked={c.checked}
-                                            onChange={(e) => handleCategoriaChange(e, c)}
-                                        />
-                                    ))}
-                                </Form.Control>
-                                <InputGroup.Text className='search-bar'>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Pesquisar"
-                                        onChange={(e) => {
-                                            const { value } = e.target;
-                                            setSearchTerm(value);
-                                        }}
-                                    />
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                    <Button className='mt-3 mb-3' variant="warning" type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
-                    </Button>
-                </Form>
+                            </InputGroup.Text>
+                        </InputGroup>
+                    </Col>
+                </Row>
+                <Button className='mt-3 mb-3' variant="warning" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
+                </Button>
+            </Form>
 
-                <ModalProvider>
-                    {showDynamicTable && <DynamicTable idReceita={idReceita} />}
-                    <CadStepModal />
-                </ModalProvider>
-            </Container>
+            <ModalProvider>
+                {showDynamicTable && <DynamicTable idReceita={idReceita} />}
+                <CadStepModal idReceita={idReceita} />
+            </ModalProvider>
 
             <CustomToast
                 show={showSuccessToast}
@@ -195,7 +196,7 @@ function CadReceita() {
                 type="error"
                 message="Por favor, preencha todos os campos obrigatórios."
             />
-        </>
+        </Container>
     );
 }
 
