@@ -21,6 +21,21 @@
 .step-video {
     max-width: 80vw;
     max-height: 60vh;
+    margin-bottom: 2rem;
+}
+
+.video {
+    text-align: center;
+    position: relative;
+}
+
+.hint-menu {
+    position: absolute;
+    color: #bbb;
+    font-size: 14px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
 }
 
 .btn-edit {

@@ -1,6 +1,6 @@
 import Header from '../core/header/Header';
 import { ModalProvider } from '../shared/modal/ModalContext';
-import ModalReviewReceita from '../shared/modal/modalReviewReceita';
+import ModalReviewReceita from '../shared/modal/ModalReviewReceita';
 import Feed from './feed/Feed';
 
 function Home() {

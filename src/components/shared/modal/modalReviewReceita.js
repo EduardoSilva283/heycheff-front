@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useModal } from "./ModalContext";
-import Modal from 'react-bootstrap/Modal';
-import CustomToast from "../toast/CustomToast";
-import api from "../../../service/api";
 import { Accordion, Col, Container, Form, InputGroup, Row, Table } from "react-bootstrap";
+import Modal from 'react-bootstrap/Modal';
+
+import api from "../../../service/api";
 import { displayMedia, getBlobMedia } from "../../../service/media";
-import styles from "./modalReviewReceita.module.css"
+import CustomToast from "../toast/CustomToast";
+import { useModal } from "./ModalContext";
+import styles from "./modalReviewReceita.module.css";
 
 function ModalReviewReceita() {
     const { isModalOpen, closeModal, modalData } = useModal();
@@ -34,7 +35,6 @@ function ModalReviewReceita() {
             </Modal.Header>
             <Modal.Body>
                 <Container>
-
                     <Row>
                         <Col className={styles["col-lg-3-review"]} lg={3} md={12}>
                             <InputGroup className="mb-3 align-items-center justify-content-center">
@@ -112,17 +112,14 @@ function AccordionBody({ step }) {
     return (
         <Accordion.Body onEntering={handleEntering}>
             <div className="text-center">
-                <video
-
-                    width="100%"
-                    controls
+                <video width="100%" controls
                     style={{ minWidth: '300px', maxWidth: '600px', maxHeight: '600px' }}
                 >
                     {videoSrc && <source src={videoSrc} type={videoType} />}
                     Seu navegador não suporta vídeos HTML5.
                 </video>
             </div>
-            <hr/>
+            <hr />
             <Table>
                 <thead className="justify-content-center">
                     <tr>

@@ -100,8 +100,8 @@ function CadStepModal({ idReceita }) {
     const handleContextMenu = (event) => {
         event.preventDefault();
         setContextMenu({
-            x: event.pageX,
-            y: event.pageY,
+            x: event.clientX,
+            y: event.clientY,
             visible: true
         });
     };
@@ -181,7 +181,7 @@ function CadStepModal({ idReceita }) {
                                 onChange={handleFileChange} className='input-video' />
                         </Form.Label>
                         {currentStep.selectedVideo && (
-                            <div onClick={handleClick} style={{ textAlign: "center", position: 'relative' }}>
+                            <div onClick={handleClick} className='video'>
                                 <video
                                     controls
                                     className='step-video'
@@ -211,6 +211,9 @@ function CadStepModal({ idReceita }) {
                                         </li>
                                     </ul>
                                 )}
+                                <span className='hint-menu'>
+                                    Clique com o botão direito do mouse para abrir o menu
+                                </span>
                             </div>
                         )}
                     </Form.Group>

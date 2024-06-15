@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import api from '../../../service/api';
-import { displayMediaType } from '../../../service/media';
+import { displayMediaType, getBlobMedia } from '../../../service/media';
 import { useModal } from '../../shared/modal/ModalContext';
 
 import '../receita/cadReceita.css';
@@ -25,13 +25,14 @@ function DynamicTable({ idReceita }) {
 		try {
 			const stepData = (await api.get(`/receitas/${idReceita}/steps/${step.stepNumber}`)).data;
 			const [video, type] = await displayMediaType(stepData.path);
+			const blobVideo = await getBlobMedia(stepData.path);
 			setCurrentStep({
 				stepNumber: stepData.stepNumber,
 				modoPreparo: stepData.modoPreparo,
 				produtos: stepData.produtos || [],
 				isEditing: true,
 				selectedVideo: { video: video, type: type },
-				video: video
+				video: blobVideo
 			});
 			openCadStepModal();
 		} catch (error) {

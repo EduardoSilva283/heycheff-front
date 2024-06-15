@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, InputGroup, Row, ToggleButton } from 'react-bootstrap';
 
 import api from '../../../service/api';
-import CustomToast from '../../shared/toast/CustomToast';
-
 import { ModalProvider } from '../../shared/modal/ModalContext';
+import CustomToast from '../../shared/toast/CustomToast';
 import CadStepModal from '../step/CadStepModal';
 import DynamicTable from '../step/DynamicTable';
+
 import './cadReceita.css';
 
 function CadReceita() {
@@ -21,8 +21,7 @@ function CadReceita() {
     const [showDynamicTable, setShowDynamicTable] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [idReceita, setIdReceita] = useState(null);
-    const [showSuccessToast, setShowSuccessToast] = useState(false);
-    const [showErrorToast, setShowErrorToast] = useState(false);
+    const [toastOptions, setToastOptions] = useState({ show: false })
     const refInputThumb = useRef();
 
     useEffect(() => {
@@ -73,7 +72,11 @@ function CadReceita() {
         e.preventDefault();
 
         if (!titulo || !file || selectedCategorias.length === 0) {
-            setShowErrorToast(true);
+            setToastOptions({
+                show: true,
+                type: "error",
+                message: "Por favor, preencha todos os campos obrigatórios.",
+            });
             return;
         }
         const formData = new FormData();
@@ -90,7 +93,11 @@ function CadReceita() {
             });
             const { seqId } = response.data;
             setIdReceita(seqId);
-            setShowSuccessToast(true);
+            setToastOptions({
+                show: true,
+                type: "success",
+                message: "Receita cadastrada com sucesso!",
+            });
             setIsSubmitting(true);
             setShowDynamicTable(true);
         } catch (error) {
@@ -184,17 +191,10 @@ function CadReceita() {
             </ModalProvider>
 
             <CustomToast
-                show={showSuccessToast}
-                onClose={() => setShowSuccessToast(false)}
-                type="success"
-                message="Receita cadastrada com sucesso!"
-            />
-
-            <CustomToast
-                show={showErrorToast}
-                onClose={() => setShowErrorToast(false)}
-                type="error"
-                message="Por favor, preencha todos os campos obrigatórios."
+                show={toastOptions?.show}
+                onClose={() => setToastOptions({ show: false, })}
+                type={toastOptions?.type}
+                message={toastOptions?.message}
             />
         </Container>
     );
