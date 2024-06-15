@@ -4,10 +4,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 import api from '../../../service/api';
-import ReceitaCard from '../cards/ReceitaCard';
 import { useModal } from '../../shared/modal/ModalContext';
+import ReceitaCard from '../cards/ReceitaCard';
 
-function Feed({refresh}) {
+function Feed() {
     const [receitas, setReceitas] = useState([]);
     const { openModal } = useModal();
 
@@ -20,11 +20,11 @@ function Feed({refresh}) {
                 console.error('Erro ao buscar receitas:', error);
             }
         })();
-    }, [refresh]);
+    }, []);
 
-    return (<>
-        <Container fluid className='mt-4'>
-            <Row xs={1} md={2} lg={3} className='g-2'>
+    return (
+        <Container fluid className='mt-4 mb-4'>
+            <Row xs={1} md={2} lg={3} className='g-2 align-items-center'>
                 {receitas.map((receita) => (
                     <Col key={receita.id} onClick={() => openModal(receita)}>
                         <ReceitaCard receita={receita} />
@@ -32,7 +32,7 @@ function Feed({refresh}) {
                 ))}
             </Row>
         </Container>
-    </>);
+    );
 }
 
 export default Feed;

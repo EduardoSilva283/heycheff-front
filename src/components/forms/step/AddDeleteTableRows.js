@@ -11,20 +11,20 @@ function AddDeleteTableRows({ rowsData, setRowsData }) {
             unidMedida: '',
             medida: ''
         };
-        setRowsData([...rowsData, rowsInput]);
+        setRowsData(step => ({ ...step, produtos: [...rowsData, rowsInput] }));
     };
 
     const deleteTableRows = (index) => {
         const rows = [...rowsData];
         rows.splice(index, 1);
-        setRowsData(rows);
+        setRowsData(step => ({ ...step, produtos: rows }));
     };
 
-    const handleChange = (index, evnt) => {
-        const { name, value } = evnt.target;
+    const handleChange = (index, event) => {
+        const { name, value } = event.target;
         const rowsInput = [...rowsData];
         rowsInput[index][name] = value;
-        setRowsData(rowsInput);
+        setRowsData(step => ({ ...step, produtos: rowsInput }));
     };
 
     return (
