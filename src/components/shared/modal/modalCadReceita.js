@@ -11,7 +11,7 @@ import { useModal } from './ModalContext';
 
 import styles from './modalCadReceita.module.css';
 
-function ModalCadReceita() {
+function ModalCadReceita({ onRefresh }) {
     const { isModalOpen, closeModal } = useModal();
     const [categorias, setCategorias] = useState([]);
     const [titulo, setTitulo] = useState('');
@@ -23,8 +23,7 @@ function ModalCadReceita() {
     const [searchTerm, setSearchTerm] = useState('');
     const [idReceita, setIdReceita] = useState(null);
     const refInputThumb = useRef();
-    const [showSuccessToast, setShowSuccessToast] = useState(false);
-    const [showErrorToast, setShowErrorToast] = useState(false);
+    const [toastOptions, setToastOptions] = useState({ show: false })
 
     useEffect(() => {
         (async () => {
@@ -40,6 +39,22 @@ function ModalCadReceita() {
             }
         })();
     }, []);
+
+    const resetForm = () => {
+        setTitulo('');
+        setSelectedCategorias([]);
+        setFile(null);
+        setSelectedImage(null);
+        setIsSubmitting(false);
+        setShowDynamicTable(false);
+        setSearchTerm('');
+        setIdReceita(null);
+        setToastOptions({ show: false });
+        setCategorias((elements) => {
+            elements.forEach(cat => (cat.checked = false));
+            return elements;
+        })
+    };
 
     const handleCategoriaChange = (e, categoria) => {
         const { checked } = e.target;
@@ -72,7 +87,11 @@ function ModalCadReceita() {
         e.preventDefault();
 
         if (!titulo || !file || selectedCategorias.length === 0) {
-            setShowErrorToast(true); // Exibir o Toast de erro
+            setToastOptions({
+                show: true,
+                type: "error",
+                message: "Por favor, preencha todos os campos obrigatórios.",
+            });
             return;
         }
         const formData = new FormData();
@@ -92,10 +111,13 @@ function ModalCadReceita() {
             const { seqId } = response.data;
             setIdReceita(seqId);
             console.log(idReceita);
-            setShowSuccessToast(true); // Exibir o Toast de sucesso
+            setToastOptions({
+                show: true,
+                type: "success",
+                message: "Receita cadastrada com sucesso!",
+            });
             setIsSubmitting(true);
             setShowDynamicTable(true);
-
         } catch (error) {
             console.error('Error:', error);
         }
@@ -116,22 +138,22 @@ function ModalCadReceita() {
                         <Row>
                             <Col className='mb-3'>
                                 <div className='d-flex align-items-center justify-content-center border rounded p-2 ps-3 pe-3 w-100 h-100'>
-                                    <Form.Group controlId="addThumb" className="heycheffButton text-center">
-                                        <Form.Label hidden={selectedImage} className={`${styles["input-file"]} input-file text-center w-100 m-0`} style={{ maxWidth: '170px' }}>
+                                    <Form.Group controlId="addThumb" className={`${styles.heycheffButton} text-center`}>
+                                        <Form.Label hidden={selectedImage} className={`${styles["input-file"]} text-center w-100 m-0`} style={{ maxWidth: '170px' }}>
                                             <FontAwesomeIcon icon={faImage} className="me-2" />
                                             Adicionar Capa
                                             <Form.Control ref={refInputThumb} type='file' hidden accept='image/*' onChange={handleFileChange} />
                                         </Form.Label>
                                         {selectedImage && (
-                                            <div className='image-container'>
+                                            <div className={styles["image-container"]}>
                                                 <img
                                                     src={selectedImage}
-                                                    className={`${isSubmitting ? 'disable-opacity' : ''} thumb`}
+                                                    className={`${isSubmitting ? `${styles["image-container"]}` : ''} ${styles.thumb}`}
                                                     alt="Preview"
                                                     onClick={() => (isSubmitting ? null : refInputThumb.current.click())}
                                                 />
                                                 {!isSubmitting && (
-                                                    <div className="edit-icon">
+                                                    <div className={styles["edit-icon"]}>
                                                         <FontAwesomeIcon icon={faEdit} onClick={() => refInputThumb.current.click()} />
                                                     </div>
                                                 )}
@@ -183,22 +205,28 @@ function ModalCadReceita() {
                             {isSubmitting ? 'Receita Salva' : 'Salvar Receita'}
                         </Button>
                     </Form>
-                    {showDynamicTable && <DynamicTable idReceita={idReceita} />}
+                    {showDynamicTable &&
+                        <DynamicTable
+                            idReceita={idReceita}
+                            closeModalCadReceita={() => {
+                                onRefresh();
+                                closeModal();
+                                setToastOptions({
+                                    show: true,
+                                    type: "success",
+                                    message: "Parabéns, receita cadastrada com sucesso!",
+                                });
+                                resetForm();
+                            }}
+                        />}
                 </Modal.Body>
             </Modal>
 
             <CustomToast
-                show={showSuccessToast}
-                onClose={() => setShowSuccessToast(false)}
-                type="success"
-                message="Receita cadastrada com sucesso!"
-            />
-
-            <CustomToast
-                show={showErrorToast}
-                onClose={() => setShowErrorToast(false)}
-                type="error"
-                message="Por favor, preencha todos os campos obrigatórios."
+                show={toastOptions?.show}
+                onClose={() => setToastOptions({ show: false, })}
+                type={toastOptions?.type}
+                message={toastOptions?.message}
             />
         </>
     );

@@ -7,7 +7,7 @@ import api from '../../../service/api';
 import ReceitaCard from '../cards/ReceitaCard';
 import { useModal } from '../../shared/modal/ModalContext';
 
-function Feed() {
+function Feed({refresh}) {
     const [receitas, setReceitas] = useState([]);
     const { openModal } = useModal();
 
@@ -20,7 +20,7 @@ function Feed() {
                 console.error('Erro ao buscar receitas:', error);
             }
         })();
-    }, []);
+    }, [refresh]);
 
     return (<>
         <Container fluid className='mt-4'>

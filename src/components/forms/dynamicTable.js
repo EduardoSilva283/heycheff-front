@@ -1,14 +1,14 @@
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Form, Modal, Table } from 'react-bootstrap';
+import { Button, Form, InputGroup, Modal, Table } from 'react-bootstrap';
 
 import api from '../../service/api';
 import AddDeleteTableRows from '../forms/AddDeleteTableRows';
 
-import '../shared/modal/modalCadReceita.module.css';
+import style from '../shared/modal/modalCadReceita.module.css';
 
-function DynamicTable({ idReceita }) {
+function DynamicTable({ idReceita, closeModalCadReceita }) {
 	const [steps, setSteps] = useState([]);
 	const [listSteps, setListSteps] = useState([]);
 	const [currentStep, setCurrentStep] = useState({ stepNumber: null, modoPreparo: '', index: null, path: null, produtos: [] });
@@ -21,17 +21,14 @@ function DynamicTable({ idReceita }) {
 	const refInputVideo = useRef();
 
 	useEffect(() => {
-		// Load steps from the API when the component mounts
-		const fetchSteps = async () => {
+		(async () => {
 			try {
 				const response = await api.get(`/receitas/${idReceita}`);
 				setListSteps(response.data.steps);
 			} catch (error) {
 				console.error('Error fetching steps:', error);
 			}
-		};
-
-		fetchSteps();
+		})();
 	}, [idReceita]);
 
 	const createVideoThumb = (event) => {
@@ -64,15 +61,13 @@ function DynamicTable({ idReceita }) {
 		setCurrentStep(step);
 		setModoPreparo(step.modoPreparo);
 		if (step.index !== null) {
-
 			setRowsData(step.produtos || []);
 		} else {
 			setRowsData([]);
 		}
-		//setRowsData(step.produtos || []);
 		setIsEditing(false);
 		setShowModal(true);
-		handleListStep()
+		handleListStep();
 	};
 	const handleEditStep = async (step) => {
 		try {
@@ -140,7 +135,6 @@ function DynamicTable({ idReceita }) {
 		}
 		handleListStep();
 		handleCloseModal();
-
 	};
 
 	const handleDeleteStep = async (stepNumber) => {
@@ -161,8 +155,7 @@ function DynamicTable({ idReceita }) {
 				},
 			});
 			handleCloseModal();
-
-
+			closeModalCadReceita();
 		} catch (error) {
 			console.error('Error finalizing the cadastro:', error);
 			alert('Erro ao finalizar o cadastro.');
@@ -234,8 +227,8 @@ function DynamicTable({ idReceita }) {
 				</Modal.Header>
 				<Modal.Body>
 					<Form>
-						<Form.Group controlId="addVideoStep" className="heycheffButton">
-							<Form.Label hidden={selectedVideo} className='input-file'>
+						<Form.Group controlId="addVideoStep" className={style.heycheffButton}>
+							<Form.Label hidden={selectedVideo} className={style["input-file"]}>
 								<FontAwesomeIcon icon={faVideo} className="me-2" />
 								Adicionar Vídeo
 								<Form.Control ref={refInputVideo} type='file' hidden accept='video/*' onChange={handleFileChange} />
@@ -276,14 +269,22 @@ function DynamicTable({ idReceita }) {
 
 						<AddDeleteTableRows rowsData={rowsData} setRowsData={setRowsData} />
 
-						<Form.Group controlId="addModoPreparo">
+						<InputGroup controlId="addModoPreparo" className="mb-3">
+							<InputGroup.Text>Modo de Preparo</InputGroup.Text>
+							<Form.Control
+								type="text"
+								value={modoPreparo}
+								onChange={(e) => setModoPreparo(e.target.value)}
+							/>
+						</InputGroup>
+						{/* <Form.Group controlId="addModoPreparo">
 							<Form.Label>Modo de Preparo</Form.Label>
 							<Form.Control
 								type="text"
 								value={modoPreparo}
 								onChange={(e) => setModoPreparo(e.target.value)}
 							/>
-						</Form.Group>
+						</Form.Group> */}
 
 						<br></br>
 

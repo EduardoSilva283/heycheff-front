@@ -22,8 +22,7 @@ function Header() {
                             aria-label="Search"
                         />
                     </Form>
-                    <Button variant="outline-danger" onClick={openModal} >Cadastrar Receita</Button>
-
+                    <Button variant="outline-danger" onClick={openModal}>Cadastrar Receita</Button>
                 </Container>
             </Navbar>
         </>

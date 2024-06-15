@@ -54,7 +54,7 @@ function TableRows({ rowsData, deleteTableRows, handleChange }) {
 
                         <td>
                             <Form.Control
-                                type="text"
+                                type="number"
                                 value={medida}
                                 onChange={(evnt) => handleChange(index, evnt)}
                                 name="medida"
