@@ -38,12 +38,12 @@ function ModalReviewReceita() {
                     <Row>
                         <Col className={styles["col-lg-3-review"]} lg={3} md={12}>
                             <InputGroup className="mb-3 align-items-center justify-content-center">
-                                <InputGroup.Text style={{ maxWidth: "300px" }}>
+                                <InputGroup.Text style={{ maxWidth: '300px' }}>
                                     <img
                                         src={receita.thumb}
                                         alt="Preview"
                                         onChange={() => URL.revokeObjectURL(receita.thumb)}
-                                        style={{ maxWidth: "100%" }}
+                                        style={{ maxWidth: '100%' }}
                                     />
                                 </InputGroup.Text>
                             </InputGroup>
@@ -56,7 +56,7 @@ function ModalReviewReceita() {
                                         <Form.Control
                                             type="text"
                                             disabled={true}
-                                            style={{ backgroundColor: "#ffffff" }}
+                                            style={{ backgroundColor: '#ffffff' }}
                                             value={!receita?.tags || receita.tags.map(a => a.tag).join(' / ')}
                                         />
                                     </InputGroup>
