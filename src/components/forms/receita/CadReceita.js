@@ -83,6 +83,7 @@ function CadReceita() {
         formData.append('titulo', titulo);
         formData.append('tags', JSON.stringify(selectedCategorias));
         formData.append('thumb', file);
+        formData.append('userId',  window.localStorage.getItem("userId")); //TODO: pegar o id do usuario logado
 
         //TODO: adicionar verificação para os valores
         try {

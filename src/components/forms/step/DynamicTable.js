@@ -30,6 +30,7 @@ function DynamicTable({ idReceita }) {
 				stepNumber: stepData.stepNumber,
 				modoPreparo: stepData.modoPreparo,
 				produtos: stepData.produtos || [],
+				timeMinutes: stepData.timeMinutes, // <-- Adicionado para preencher o campo ao editar
 				isEditing: true,
 				selectedVideo: { video: video, type: type },
 				video: blobVideo

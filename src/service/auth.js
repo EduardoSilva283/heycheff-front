@@ -13,6 +13,7 @@ export async function authenticate(username, password) {
     }).then(resp => {
         window.localStorage.setItem("JWT", resp.data.token);
         window.localStorage.setItem("expiration", resp.data.expiration);
+        window.localStorage.setItem("userId", resp.data.userId);
         return resp.status;
     })
         .catch(error => console.log("Error authenticating: " + error));
