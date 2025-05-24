@@ -28,6 +28,7 @@ function CadStepModal({ idReceita }) {
     const stepReset = useMemo(() => ({
         stepNumber: stepList.length + 1,
         modoPreparo: '',
+        timeMinutes: 0,
         produtos: [{
             desc: '',
             unidMedida: '',
@@ -122,6 +123,7 @@ function CadStepModal({ idReceita }) {
         formData.append('modoPreparo', currentStep.modoPreparo);
         formData.append('produtos', JSON.stringify(currentStep.produtos));
         formData.append('stepNumber', currentStep.stepNumber);
+        formData.append('timeMinutes', currentStep.timeMinutes);
 
         try {
             if (currentStep.isEditing) {
@@ -162,6 +164,9 @@ function CadStepModal({ idReceita }) {
 
     const setModoPreparo = (modoPreparo) => {
         setCurrentStep(step => ({ ...step, modoPreparo: modoPreparo }));
+    }
+    const setTimeMinutes = (timeMinutes) => {
+        setCurrentStep(step => ({ ...step, timeMinutes: timeMinutes }));
     }
 
     return (
@@ -219,7 +224,15 @@ function CadStepModal({ idReceita }) {
                     </Form.Group>
 
                     <AddDeleteTableRows rowsData={currentStep.produtos} setRowsData={setCurrentStep} />
-
+                    <Form.Group controlId="addTimeMinutes">
+                        <Form.Label>Tempo estimado</Form.Label>
+                        <Form.Control
+                            as="input"
+                            type="number"
+                            value={currentStep.timeMinutes}
+                            onChange={(e) => setTimeMinutes(e.target.value)}
+                        />
+                    </Form.Group>
                     <Form.Group controlId="addModoPreparo">
                         <Form.Label>Modo de Preparo</Form.Label>
                         <Form.Control
