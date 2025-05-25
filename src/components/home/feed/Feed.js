@@ -31,11 +31,12 @@ function Feed() {
             if (total0)
                 setTotalReceitas(response.data.count);
 
-            setReceitas([...receitas, ...response.data.items]);
-            setPageNum(pageNum + 1);
+            setReceitas(prev => [...prev, ...response.data.items]);
+            setPageNum(prev => prev + 1);
 
             if (!total0 && totalReceitas === receitas.length)
                 setHasMore(false);
+            if (response.data.items.length < pageSize) setHasMore(false);
 
         } catch (error) {
             console.error('Erro ao buscar receitas:', error);
@@ -62,8 +63,7 @@ function Feed() {
                 </Row>
             </InfiniteScroll>
             {!total0 && totalReceitas === receitas.length
-                ? <span className='text-muted mt-3 mx-auto'>
-                    Sem mais receitas</span>
+                ? <span className='text-muted mt-3 mx-auto'>Sem mais receitas</span>
                 : ''}
         </Container>
     );
