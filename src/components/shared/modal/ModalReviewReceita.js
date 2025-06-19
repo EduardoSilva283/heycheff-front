@@ -94,31 +94,48 @@ export default ModalReviewReceita;
 
 function AccordionBody({ step }) {
     const [videoSrc, setVideoSrc] = useState(null);
-    const [videoType, setVideoType] = useState(null)
+    const [videoType, setVideoType] = useState(null);
 
-    const handleEntering = async () => {
-        const reader = new FileReader();
-        const promiseOnLoad = new Promise(resolve => {
-            reader.onloadend = () => {
-                resolve();
+    useEffect(() => {
+        let isMounted = true;
+        let objectUrl;
+
+        async function loadVideo() {
+            if (!step?.path) return;
+            try {
+                const binaryData = await getBlobMedia(step.path);
+                if (isMounted) {
+                    const blob = new Blob([binaryData], { type: 'video/mp4' }); 
+                    objectUrl = URL.createObjectURL(blob);
+                    setVideoSrc(objectUrl);
+                    setVideoType('video/mp4'); 
+                }
+            } catch (error) {
+                console.error('Erro ao carregar vídeo:', error);
             }
-        })
-        const blob = await getBlobMedia(step.path);
-        reader.readAsDataURL(blob);
-        await promiseOnLoad;
-        setVideoSrc(reader.result);
-        setVideoType(blob.type);
-    };
+        }
+
+        loadVideo();
+
+        return () => {
+            isMounted = false;
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [step]);
 
     return (
-        <Accordion.Body onEntering={handleEntering}>
+        <Accordion.Body>
             <div className="text-center">
-                <video width="100%" controls
-                    style={{ minWidth: '300px', maxWidth: '600px', maxHeight: '600px' }}
-                >
-                    {videoSrc && <source src={videoSrc} type={videoType} />}
-                    Seu navegador não suporta vídeos HTML5.
-                </video>
+                {videoSrc && (
+                    <video width="100%" controls
+                        style={{ minWidth: '300px', maxWidth: '600px', maxHeight: '600px' }}
+                    >
+                        <source src={videoSrc} type={videoType} />
+                        Seu navegador não suporta vídeos HTML5.
+                    </video>
+                )}
             </div>
             <hr />
             <Table>
