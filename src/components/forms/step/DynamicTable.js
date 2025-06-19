@@ -30,7 +30,7 @@ function DynamicTable({ idReceita }) {
 				stepNumber: stepData.stepNumber,
 				modoPreparo: stepData.modoPreparo,
 				produtos: stepData.produtos || [],
-				timeMinutes: stepData.timeMinutes, // <-- Adicionado para preencher o campo ao editar
+				timeMinutes: stepData.timeMinutes, 
 				isEditing: true,
 				selectedVideo: { video: video, type: type },
 				video: blobVideo
@@ -70,18 +70,20 @@ function DynamicTable({ idReceita }) {
 		<>
 			<DataTable value={stepList} rowHover stripedRows size='large'
 				emptyMessage='Não há steps cadastrados'>
-				<Column field='stepNumber' header='#' className='px-3' align='center'
-					alignHeader='center' />
+				<Column header='#' className='px-3' align='center' alignHeader='center'
+					body={(_step, { rowIndex }) => rowIndex + 1} />
 				<Column header='Vídeo' className='p-2' align='center' alignHeader='center'
-					body={
-						step => <img className='thumb' src={videoThumbs.get(step.stepNumber)}
-							alt='video-thumb' />
-					} />
+					body={(_step, { rowIndex }) => {
+						const thumb = videoThumbs.get(rowIndex + 1);
+						return thumb
+							? <img className='thumb' src={thumb} alt='video-thumb' />
+							: <span style={{color: '#bbb'}}>Sem miniatura</span>;
+					}} />
 				<Column field='modoPreparo' header='Modo de Preparo' className='px-3'
 					style={{ textAlign: 'justify', width: '100%', maxWidth: '50%' }}
 					align='center' alignHeader='center' />
 				<Column header="Ações" align='center' alignHeader='center' body={
-					step => <div>
+					(step, { rowIndex }) => <div>
 						<Button variant="warning" className='btn-edit'
 							onClick={() => handleEditStep(step)}>
 							Editar

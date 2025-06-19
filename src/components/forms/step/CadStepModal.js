@@ -25,19 +25,24 @@ function CadStepModal({ idReceita }) {
     });
 
     const refInputVideo = useRef();
-    const stepReset = useMemo(() => ({
-        stepNumber: stepList.length + 1,
-        modoPreparo: '',
-        timeMinutes: 0,
-        produtos: [{
-            desc: '',
-            unidMedida: '',
-            medida: ''
-        }],
-        isEditing: false,
-        selectedVideo: null,
-        video: null
-    }), [stepList]);
+    // Corrige stepNumber para nunca duplicar
+    const stepReset = useMemo(() => {
+        const usedNumbers = stepList.map(s => Number(s.stepNumber) || 0);
+        const maxStepNumber = usedNumbers.length > 0 ? Math.max(...usedNumbers) : 0;
+        return {
+            stepNumber: maxStepNumber + 1,
+            modoPreparo: '',
+            timeMinutes: 0,
+            produtos: [{
+                desc: '',
+                unidMedida: '',
+                medida: ''
+            }],
+            isEditing: false,
+            selectedVideo: null,
+            video: null
+        };
+    }, [stepList]);
 
     useEffect(() => {
         if (Object.keys(currentStep).length === 0) {
@@ -45,25 +50,20 @@ function CadStepModal({ idReceita }) {
         }
     }, [currentStep, setCurrentStep, stepList, stepReset]);
 
+    // Nova função para capturar o frame após um pequeno delay
     const createVideoThumb = (event) => {
         const video = event.target;
         const jpeg = 'image/jpeg';
-
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const thumbnail = canvas.toDataURL(jpeg);
-        setThumbnail(thumbnail);
-
-        context?.drawImage(video, 0, 0, canvas.width, canvas.height);
-        context?.canvas.toBlob(
-            blob => setSelectedVideo(current => current.img = blob), jpeg, 1
-        );
+        // Aguarda 200ms para garantir que o frame foi renderizado
+        setTimeout(() => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const thumbnail = canvas.toDataURL(jpeg);
+            setThumbnail(thumbnail);
+        }, 200);
     };
 
     const setThumbnail = (thumbnail) => {
@@ -190,7 +190,7 @@ function CadStepModal({ idReceita }) {
                                 <video
                                     controls
                                     className='step-video'
-                                    onLoadedData={createVideoThumb}
+                                    onCanPlay={createVideoThumb}
                                     onContextMenu={handleContextMenu}
                                 >
                                     <source src={currentStep.selectedVideo.video}
