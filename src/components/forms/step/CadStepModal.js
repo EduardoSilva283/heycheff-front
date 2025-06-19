@@ -25,12 +25,11 @@ function CadStepModal({ idReceita }) {
     });
 
     const refInputVideo = useRef();
-    // Corrige stepNumber para nunca duplicar
+    // Corrige stepNumber para nunca duplicar, sempre busca do backend antes de cadastrar
     const stepReset = useMemo(() => {
-        const usedNumbers = stepList.map(s => Number(s.stepNumber) || 0);
-        const maxStepNumber = usedNumbers.length > 0 ? Math.max(...usedNumbers) : 0;
+        // Este valor será atualizado antes do cadastro
         return {
-            stepNumber: maxStepNumber + 1,
+            stepNumber: 1,
             modoPreparo: '',
             timeMinutes: 0,
             produtos: [{
@@ -42,13 +41,16 @@ function CadStepModal({ idReceita }) {
             selectedVideo: null,
             video: null
         };
-    }, [stepList]);
+    }, []);
 
     useEffect(() => {
         if (Object.keys(currentStep).length === 0) {
             setCurrentStep(stepReset);
         }
     }, [currentStep, setCurrentStep, stepList, stepReset]);
+
+    // Variável para armazenar a última thumb gerada
+    const [lastGeneratedThumb, setLastGeneratedThumb] = useState(null);
 
     // Nova função para capturar o frame após um pequeno delay
     const createVideoThumb = (event) => {
@@ -58,18 +60,13 @@ function CadStepModal({ idReceita }) {
         const context = canvas.getContext('2d');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        // Aguarda 200ms para garantir que o frame foi renderizado
         setTimeout(() => {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const thumbnail = canvas.toDataURL(jpeg);
-            setThumbnail(thumbnail);
+            setLastGeneratedThumb(thumbnail); // Salva a thumb localmente
+            // Removido setThumbnail(thumbnail) daqui, a associação ocorre após cadastro do step
         }, 200);
     };
-
-    const setThumbnail = (thumbnail) => {
-        setVideoThumbs(prevThumbs => new Map(prevThumbs)
-            .set(currentStep.stepNumber, thumbnail));
-    }
 
     const handleFileChange = (e) => {
         resetVideo();
@@ -115,15 +112,29 @@ function CadStepModal({ idReceita }) {
     };
 
     const handleAddStep = async () => {
+        // Busca steps do backend para garantir stepNumber único
+        let nextStepNumber = 1;
+        try {
+            const response = await api.get(`/receitas/${idReceita}`);
+            const usedNumbers = response.data.steps.map(s => Number(s.stepNumber) || 0);
+            const maxStepNumber = usedNumbers.length > 0 ? Math.max(...usedNumbers) : 0;
+            nextStepNumber = maxStepNumber + 1;
+        } catch (error) {
+            // fallback para 1
+        }
+
         const formData = new FormData();
         if (currentStep.video) {
-            const filename = `receitaStep_${idReceita}_${currentStep.stepNumber}`;
+            const filename = `receitaStep_${idReceita}_${nextStepNumber}`;
             formData.append('video', currentStep.video, filename);
         }
         formData.append('modoPreparo', currentStep.modoPreparo);
         formData.append('produtos', JSON.stringify(currentStep.produtos));
-        formData.append('stepNumber', currentStep.stepNumber);
+        formData.append('stepNumber', nextStepNumber);
         formData.append('timeMinutes', currentStep.timeMinutes);
+
+        // Salva o stepNumber local antes do cadastro
+        const localStepNumber = nextStepNumber;
 
         try {
             if (currentStep.isEditing) {
@@ -132,7 +143,6 @@ function CadStepModal({ idReceita }) {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-
             } else {
                 await api.post(`/receitas/${idReceita}/steps`, formData, {
                     headers: {
@@ -144,7 +154,25 @@ function CadStepModal({ idReceita }) {
             console.error('Error:', error);
         }
 
-        handleListStep();
+        // Atualiza a lista e associa a última thumb gerada ao step correto
+        try {
+            const response = (await api.get(`/receitas/${idReceita}`));
+            setStepList(response.data.steps);
+            if (lastGeneratedThumb && response.data.steps.length > 0) {
+                // Procura o step retornado que tem o mesmo stepNumber local
+                const novoStep = response.data.steps.find(s => Number(s.stepNumber) === localStepNumber)
+                    || response.data.steps[response.data.steps.length - 1];
+                setVideoThumbs(prevThumbs => {
+                    const newThumbs = new Map(prevThumbs);
+                    newThumbs.set(novoStep.stepNumber, lastGeneratedThumb);
+                    return newThumbs;
+                });
+                setLastGeneratedThumb(null); // Limpa a thumb local
+            }
+        } catch (error) {
+            console.error('Error fetching steps:', error);
+        }
+
         resetStep();
         closeModal();
     };

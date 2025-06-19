@@ -44,7 +44,7 @@ function DynamicTable({ idReceita }) {
 	const handleDeleteStep = async (stepNumber) => {
 		try {
 			await api.delete(`/receitas/${idReceita}/steps/${stepNumber}`);
-			setStepList(stepList.filter(step => step.stepNumber !== stepNumber));
+			setStepList(prevList => prevList.filter(step => step.stepNumber !== stepNumber));
 		} catch (error) {
 			console.error('Error:', error);
 		}
@@ -68,13 +68,12 @@ function DynamicTable({ idReceita }) {
 
 	return (
 		<>
-			<DataTable value={stepList} rowHover stripedRows size='large'
+			<DataTable value={stepList} rowHover rowKey="stepNumber" stripedRows size='large'
 				emptyMessage='Não há steps cadastrados'>
-				<Column header='#' className='px-3' align='center' alignHeader='center'
-					body={(_step, { rowIndex }) => rowIndex + 1} />
+				<Column field='stepNumber' header='#' className='px-3' align='center' alignHeader='center' />
 				<Column header='Vídeo' className='p-2' align='center' alignHeader='center'
-					body={(_step, { rowIndex }) => {
-						const thumb = videoThumbs.get(rowIndex + 1);
+					body={step => {
+						const thumb = videoThumbs.get(step.stepNumber);
 						return thumb
 							? <img className='thumb' src={thumb} alt='video-thumb' />
 							: <span style={{color: '#bbb'}}>Sem miniatura</span>;
