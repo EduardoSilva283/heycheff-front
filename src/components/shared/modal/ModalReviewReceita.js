@@ -18,7 +18,8 @@ function ModalReviewReceita() {
             (async () => {
                 try {
                     const response = await api.get(`/receitas/${modalData?.id}`);
-                    const { steps, tags } = response.data;
+                    const { steps } = response.data;
+                    const tags = modalData.tags;
                     const thumb = await displayMedia(modalData.thumb);
                     setReceita({ ...modalData, steps, tags, thumb });
                 } catch (error) {
@@ -52,12 +53,12 @@ function ModalReviewReceita() {
                             <Row>
                                 <Col lg={12}>
                                     <InputGroup className="mb-3">
-                                        <InputGroup.Text>Categoria{!receita?.tags || receita?.tags.length <= 1 ? "" : "s"}</InputGroup.Text>
+                                        <InputGroup.Text>Categoria{receita?.tags && receita.tags.length > 1 ? "s" : ""}</InputGroup.Text>
                                         <Form.Control
                                             type="text"
                                             disabled={true}
                                             style={{ backgroundColor: '#ffffff' }}
-                                            value={!receita?.tags || receita.tags.map(a => a.tag).join(' / ')}
+                                            value={receita?.tags && receita.tags.length > 0 ? receita.tags.map(a => a.tag).join(' / ') : ""}
                                         />
                                     </InputGroup>
                                 </Col>
